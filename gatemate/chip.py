@@ -196,6 +196,8 @@ def get_timings(dly_path, name):
                     for i5 in range(5):  # [0..4]
                         for i6 in range(8):  # [0..7]
                             d = timing_data.SB_del_tile_arr[i1][i2][i3][i4][i5][i6]
+                            if d.rise.min == 123456: # not connected
+                                continue
                             name = f"sb_del_t{i1+1}_x{i2+1}_y{i3+1}_p{i4+1}_d{i5}_s{i6}"
                             val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
 
@@ -205,6 +207,8 @@ def get_timings(dly_path, name):
                 for i4 in range(12):  # [1..12]
                     for i5 in range(8):  # [0..7]
                         d = timing_data.IM_del_tile_arr[i1][i2][i3][i4][i5]
+                        if d.rise.min == 123456: # not connected
+                            continue
                         name = f"im_x{i2+1}_y{i3+1}_p{i4+1}_d{i5}_path{i1+1}"
                         val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
 
@@ -213,6 +217,8 @@ def get_timings(dly_path, name):
             for i3 in range(4):  # [9..12]
                 for i4 in range(4):  # [0..3]
                     d = timing_data.OM_del_tile_arr[i1][i2][i3][i4]
+                    if d.rise.min == 123456: # not connected
+                        continue
                     name = f"om_x{i1+1}_y{i2+1}_p{i3+9}_d{i4}"
                     val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
 
