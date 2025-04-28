@@ -105,6 +105,19 @@ def is_edge_io(x,y):
 def is_ram(x,y):
     return x in [33,65,97,129] and y in [1,17,33,49,65,81,97,113]
 
+def get_full_tile_loc_str(x,y):
+    tile_x = ((x-1)+16) % 8
+    tile_y = ((y-1)+16) % 8
+    tile   = (((x+16-1) // 8)+2) % 4
+
+    return f"t{tile}_x{tile_x}_y{tile_y}"
+
+def get_tile_loc_str(x,y):
+    tile_x = ((x-1)+16) % 8
+    tile_y = ((y-1)+16) % 8
+
+    return f"x{tile_x}_y{tile_y}"
+
 @dataclass
 class IOName:
     bank : str
