@@ -112,6 +112,33 @@ class Tdel_rec:
         offset += 4
 
         return Tdel_rec(val, conf_mux, name, x, y, plane, dir, inv, cnt, con_type_val), offset
+    
+@dataclass
+class Tdel_rec_tri:
+    val: T_delay_tri
+    conf_mux: int
+    name: str
+    x: int
+    y: int
+
+    @staticmethod
+    def from_bytes(mv: memoryview, offset: int) -> ('Tdel_rec_tri', int):
+        val = T_delay_tri.from_bytes(mv[offset:offset+12])
+        offset += 12
+
+        conf_mux = struct.unpack_from('<i', mv, offset)[0]
+        offset += 4
+
+        strlen = mv[offset]
+        offset += 1
+        name = mv[offset:offset + strlen].decode('ascii')
+        offset += 23
+
+        x, y = struct.unpack_from('<2i', mv, offset)
+        offset += 8
+
+        return Tdel_rec_tri(val, conf_mux, name, x, y), offset
+
 
 def read_SB_del_tile_arr_from_bytes(mv: memoryview, offset: int) -> (List, int):
     SB_del_tile_arr = []
@@ -140,6 +167,171 @@ def read_SB_del_tile_arr_from_bytes(mv: memoryview, offset: int) -> (List, int):
         SB_del_tile_arr.append(level1)
 
     return SB_del_tile_arr, offset
+
+@dataclass
+class ExtraTimingDelays:
+    skew_report_del: int
+    fix_skew_del: int
+    del_rec_0: Tdel_rec
+    del_min_route_SB: Tdel_rec
+    del_violation_common: Tdel_rec_tri
+    del_dummy: Tdel_rec
+    del_Hold_D_L: Tdel_rec_tri
+    del_Hold_RAM: Tdel_rec_tri
+    del_Setup_D_L: Tdel_rec_tri
+    del_Setup_RAM: Tdel_rec_tri
+    del_Hold_SN_RN: Tdel_rec_tri
+    del_Setup_SN_RN: Tdel_rec_tri
+    del_Hold_RN_SN: Tdel_rec_tri
+    del_Setup_RN_SN: Tdel_rec_tri
+    del_bot_couty2: Tdel_rec
+    del_bot_glb_couty2: Tdel_rec
+    del_bot_SB_couty2: Tdel_rec
+    del_bot_pouty2: Tdel_rec
+    del_bot_glb_pouty2: Tdel_rec
+    del_bot_SB_pouty2: Tdel_rec
+    del_left_couty2: Tdel_rec
+    del_left_glb_couty2: Tdel_rec
+    del_left_SB_couty2: Tdel_rec
+    del_left_pouty2: Tdel_rec
+    del_left_glb_pouty2: Tdel_rec
+    del_left_SB_pouty2: Tdel_rec
+    del_inp: List[Tdel_rec]
+    del_CPE_out_mux: List[Tdel_rec]
+    del_CPE_CP_Q: Tdel_rec
+    del_CPE_S_Q: Tdel_rec
+    del_CPE_R_Q: Tdel_rec
+    del_CPE_D_Q: Tdel_rec
+    del_RAM_CLK_DO: Tdel_rec
+    del_GLBOUT_sb_big: Tdel_rec
+    del_sb_drv: Tdel_rec
+    del_CP_carry_path: Tdel_rec
+    del_CP_prop_path: Tdel_rec
+    del_special_RAM_I: Tdel_rec
+    del_RAMO_xOBF: Tdel_rec
+    del_GLBOUT_IO_SEL: Tdel_rec
+    del_IO_SEL_Q_out: Tdel_rec
+    del_IO_SEL_Q_in: Tdel_rec
+    in_delayline_per_stage: Tdel_rec
+    out_delayline_per_stage: Tdel_rec
+    del_IBF: Tdel_rec
+    del_OBF: Tdel_rec
+    del_r_OBF: Tdel_rec
+    del_TOBF_ctrl: Tdel_rec
+    del_LVDS_IBF: Tdel_rec
+    del_LVDS_OBF: Tdel_rec
+    del_LVDS_r_OBF: Tdel_rec
+    del_LVDS_TOBF_ctrl: Tdel_rec
+    del_CP_clkin: Tdel_rec
+    del_CP_enin: Tdel_rec
+    del_preplace: Tdel_rec
+    del_CPE_timing_mod: List[Tdel_rec]
+
+    @staticmethod
+    def from_bytes(mv: memoryview, offset: int) -> ('ExtraTimingDelays', int):
+        skew_report_del, fix_skew_del = struct.unpack_from('<2i', mv, offset)
+        offset += 8
+
+        del_rec_0, offset = Tdel_rec.from_bytes(mv, offset)
+        del_min_route_SB, offset = Tdel_rec.from_bytes(mv, offset)
+        del_violation_common, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_dummy, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_Hold_D_L, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Hold_RAM, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Setup_D_L, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Setup_RAM, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Hold_SN_RN, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Setup_SN_RN, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Hold_RN_SN, offset = Tdel_rec_tri.from_bytes(mv, offset)
+        del_Setup_RN_SN, offset = Tdel_rec_tri.from_bytes(mv, offset)
+
+        del_bot_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_bot_glb_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_bot_SB_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_bot_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_bot_glb_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_bot_SB_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_glb_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_SB_couty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_glb_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+        del_left_SB_pouty2, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_inp = []
+        for _ in range(8):
+            rec, offset = Tdel_rec.from_bytes(mv, offset)
+            del_inp.append(rec)
+
+        del_CPE_out_mux = []
+        for _ in range(4):
+            rec, offset = Tdel_rec.from_bytes(mv, offset)
+            del_CPE_out_mux.append(rec)
+
+        del_CPE_CP_Q, offset = Tdel_rec.from_bytes(mv, offset)
+        del_CPE_S_Q, offset = Tdel_rec.from_bytes(mv, offset)
+        del_CPE_R_Q, offset = Tdel_rec.from_bytes(mv, offset)
+        del_CPE_D_Q, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_RAM_CLK_DO, offset = Tdel_rec.from_bytes(mv, offset)
+        del_GLBOUT_sb_big, offset = Tdel_rec.from_bytes(mv, offset)
+        del_sb_drv, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_CP_carry_path, offset = Tdel_rec.from_bytes(mv, offset)
+        del_CP_prop_path, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_special_RAM_I, offset = Tdel_rec.from_bytes(mv, offset)
+        del_RAMO_xOBF, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_GLBOUT_IO_SEL, offset = Tdel_rec.from_bytes(mv, offset)
+        del_IO_SEL_Q_out, offset = Tdel_rec.from_bytes(mv, offset)
+        del_IO_SEL_Q_in, offset = Tdel_rec.from_bytes(mv, offset)
+
+        in_delayline_per_stage, offset = Tdel_rec.from_bytes(mv, offset)
+        out_delayline_per_stage, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_IBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_OBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_r_OBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_TOBF_ctrl, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_LVDS_IBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_LVDS_OBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_LVDS_r_OBF, offset = Tdel_rec.from_bytes(mv, offset)
+        del_LVDS_TOBF_ctrl, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_CP_clkin, offset = Tdel_rec.from_bytes(mv, offset)
+        del_CP_enin, offset = Tdel_rec.from_bytes(mv, offset)
+        del_preplace, offset = Tdel_rec.from_bytes(mv, offset)
+
+        del_CPE_timing_mod = []
+        for _ in range(42):
+            rec, offset = Tdel_rec.from_bytes(mv, offset)
+            del_CPE_timing_mod.append(rec)
+
+        return ExtraTimingDelays(
+            skew_report_del, fix_skew_del,
+            del_rec_0, del_min_route_SB,
+            del_violation_common, del_dummy,
+            del_Hold_D_L, del_Hold_RAM, del_Setup_D_L, del_Setup_RAM,
+            del_Hold_SN_RN, del_Setup_SN_RN, del_Hold_RN_SN, del_Setup_RN_SN,
+            del_bot_couty2, del_bot_glb_couty2, del_bot_SB_couty2,
+            del_bot_pouty2, del_bot_glb_pouty2, del_bot_SB_pouty2,
+            del_left_couty2, del_left_glb_couty2, del_left_SB_couty2,
+            del_left_pouty2, del_left_glb_pouty2, del_left_SB_pouty2,
+            del_inp, del_CPE_out_mux,
+            del_CPE_CP_Q, del_CPE_S_Q, del_CPE_R_Q, del_CPE_D_Q,
+            del_RAM_CLK_DO, del_GLBOUT_sb_big, del_sb_drv,
+            del_CP_carry_path, del_CP_prop_path,
+            del_special_RAM_I, del_RAMO_xOBF,
+            del_GLBOUT_IO_SEL, del_IO_SEL_Q_out, del_IO_SEL_Q_in,
+            in_delayline_per_stage, out_delayline_per_stage,
+            del_IBF, del_OBF, del_r_OBF, del_TOBF_ctrl,
+            del_LVDS_IBF, del_LVDS_OBF, del_LVDS_r_OBF, del_LVDS_TOBF_ctrl,
+            del_CP_clkin, del_CP_enin, del_preplace,
+            del_CPE_timing_mod
+        ), offset
 
 def read_IM_del_tile_arr_from_bytes(mv: memoryview, offset: int) -> (List, int):
     result = []
@@ -306,6 +498,17 @@ def read_TRAM_del_rec_from_bytes(mv: memoryview, offset: int) -> (TRAM_del_rec, 
     offset += 2 # alignment added
     return TRAM_del_rec(iopath, setuphold, width, del_entry), offset
 
+def read_IO_SEL_io_coef_from_bytes(mv: memoryview, offset: int) -> (list, int):
+    result = []
+    for i1 in range(4):  # [1..4]
+        row = []
+        for i2 in range(27):  # [1..27]
+            value = struct.unpack_from('<d', mv, offset)[0]  # '<d' = little-endian double
+            offset += 8
+            row.append(value)
+        result.append(row)
+    return result, offset
+
 @dataclass
 class Tdel_all_rec:
     SB_del_tile_arr: List[List[List[List[List[List[T_delay]]]]]]
@@ -321,6 +524,8 @@ class Tdel_all_rec:
     FPGA_ram_del_1: TRAM_del_rec
     FPGA_ram_del_2: TRAM_del_rec
     FPGA_ram_del_3: TRAM_del_rec
+    IO_SEL_io_coef: list[list[float]]
+    timing_delays: ExtraTimingDelays
 
     @staticmethod
     def from_bytes(data: bytes) -> 'Tdel_all_rec':
@@ -338,7 +543,9 @@ class Tdel_all_rec:
         fpga_ram_del_1, offset = read_TRAM_del_rec_from_bytes(data, offset)
         fpga_ram_del_2, offset = read_TRAM_del_rec_from_bytes(data, offset)
         fpga_ram_del_3, offset = read_TRAM_del_rec_from_bytes(data, offset)
-        return Tdel_all_rec(sb_del_tile_arr, im, om, cpe, sb_del_rim, edge, io_sel, clkin, glbout, pll_del, fpga_ram_del_1, fpga_ram_del_2, fpga_ram_del_3)
+        io_sel_coef, offset = read_IO_SEL_io_coef_from_bytes(data, offset)
+        timing_delays, offset = ExtraTimingDelays.from_bytes(data, offset)
+        return Tdel_all_rec(sb_del_tile_arr, im, om, cpe, sb_del_rim, edge, io_sel, clkin, glbout, pll_del, fpga_ram_del_1, fpga_ram_del_2, fpga_ram_del_3,io_sel_coef, timing_delays)
 
 
 def decompress_file(input_path, output_path):
