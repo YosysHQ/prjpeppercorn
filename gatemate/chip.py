@@ -189,6 +189,9 @@ def get_device(name):
 def convert_delay(d):
     return TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
 
+def convert_delay_val(d):
+    return TimingDelay(d.min, d.max)
+
 def get_timings(dly_path, name):
     val = dict()
     timing_data = decompress_timing(os.path.join(dly_path, "..", "delay", f"cc_{name}_dly.dly"))
@@ -227,5 +230,139 @@ def get_timings(dly_path, name):
                         continue
                     name = f"om_x{i1+1}_y{i2+1}_p{i3+9}_d{i4}"
                     val[name] = convert_delay(d)
+
+    for i1 in range(10):  # [0..9]
+        for i2 in range(19):  # [1..19]
+            for i3 in range(10):  # [1..10]
+                d = timing_data.CPE_del_tile_arr[i1][i2][i3]
+                if d.val.rise.min == 123456: # not connected
+                    continue
+                name = f"cpe_func{i1}_i{i2+1}_o{i3+1}"
+                val[name] = convert_delay(d.val)
+
+    for i1 in range(165):  # [-2..162]
+        for i2 in range(4):  # [1..4]
+            for i3 in range(12):  # [1..12]
+                for i4 in range(5):  # [0..4]
+                    for i5 in range(8):  # [0..7]
+                        d = timing_data.SB_del_rim_arr[i1][i2][i3][i4][i5]
+                        if d.rise.min == 123456: # not connected
+                            continue
+                        name = f"sb_rim_xy{i1-2}_s{i2+1}_p{i3+1}_d{i4}_s{i5}"
+                        val[name] = convert_delay(d)
+
+    for i1 in range(165):  # [-2..162]
+        for i2 in range(4):  # [1..4]
+            for i3 in range(24):  # [1..24]
+                for i4 in range(8):  # [1..8]
+                    d = timing_data.Edge_del_arr[i1][i2][i3][i4]
+                    if d.rise.min == 123456: # not connected
+                        continue
+                    name = f"edge_xy{i1-2}_s{i2+1}_i{i3+1}_o{i4+1}"
+                    val[name] = convert_delay(d)
+
+    for i1 in range(11):  # [1..11]
+        for i2 in range(4):  # [1..4]
+            d = timing_data.IO_SEL_del_arr[i1][i2]
+            if d.rise.min == 123456: # not connected
+                continue
+            name = f"io_sel_i{i1+1}_o{i2+1}"
+            val[name] = convert_delay(d)
+
+    for i1 in range(7): # [1..7]
+        for i2 in range(4): # [1..4]
+            d = timing_data.CLKIN_del_arr[i1][i2]
+            if d.rise.min == 123456: # not connected
+                continue
+            name = f"clkin_i{i1+1}_o{i2+1}"
+            val[name] = convert_delay(d)
+
+    for i1 in range(28): # [1..28]
+        for i2 in range(8): # [1..8]
+            d = timing_data.GLBOUT_del_arr[i1][i2]
+            if d.rise.min == 123456: # not connected
+                continue
+            name = f"glbout_i{i1+1}_o{i2+1}"
+            val[name] = convert_delay(d)
+
+    for i1 in range(7): # [1..7]
+        for i2 in range(6): # [1..6]
+            d = timing_data.PLL_del_arr[i1][i2]
+            if d.rise.min == 123456: # not connected
+                continue
+            name = f"pll_i{i1+1}_o{i2+1}"
+            val[name] = convert_delay(d)
+
+    val["del_rec_0"] = convert_delay(timing_data.timing_delays.del_rec_0.val)
+    val["del_min_route_SB"] = convert_delay(timing_data.timing_delays.del_min_route_SB.val)
+    val["del_violation_common"] = convert_delay_val(timing_data.timing_delays.del_violation_common.val)
+    val["del_dummy"] = convert_delay(timing_data.timing_delays.del_dummy.val)
+    val["del_Hold_D_L"] = convert_delay_val(timing_data.timing_delays.del_Hold_D_L.val)
+    val["del_Setup_D_Ldel_Setup_D_L"] = convert_delay_val(timing_data.timing_delays.del_Setup_D_L.val)
+    val["del_Hold_RAM"] = convert_delay_val(timing_data.timing_delays.del_Hold_RAM.val)
+    val["del_Setup_RAM"] = convert_delay_val(timing_data.timing_delays.del_Setup_RAM.val)
+
+    val["del_Hold_SN_RN"] = convert_delay_val(timing_data.timing_delays.del_Hold_SN_RN.val)
+    val["del_Setup_SN_RN"] = convert_delay_val(timing_data.timing_delays.del_Setup_SN_RN.val)
+    val["del_Hold_RN_SN"] = convert_delay_val(timing_data.timing_delays.del_Hold_RN_SN.val)
+    val["del_Setup_RN_SN"] = convert_delay_val(timing_data.timing_delays.del_Setup_RN_SN.val)
+
+    val["del_bot_couty2"] = convert_delay(timing_data.timing_delays.del_bot_couty2.val)
+    val["del_bot_glb_couty2"] = convert_delay(timing_data.timing_delays.del_bot_glb_couty2.val)
+    val["del_bot_SB_couty2"] = convert_delay(timing_data.timing_delays.del_bot_SB_couty2.val)
+    val["del_bot_pouty2"] = convert_delay(timing_data.timing_delays.del_bot_pouty2.val)
+    val["del_bot_glb_pouty2"] = convert_delay(timing_data.timing_delays.del_bot_glb_pouty2.val)
+    val["del_bot_SB_pouty2"] = convert_delay(timing_data.timing_delays.del_bot_SB_pouty2.val)
+
+    val["del_left_couty2"] = convert_delay(timing_data.timing_delays.del_left_couty2.val)
+    val["del_left_glb_couty2"] = convert_delay(timing_data.timing_delays.del_left_glb_couty2.val)
+    val["del_left_SB_couty2"] = convert_delay(timing_data.timing_delays.del_left_SB_couty2.val)
+    val["del_left_pouty2"] = convert_delay(timing_data.timing_delays.del_left_pouty2.val)
+    val["del_left_glb_pouty2"] = convert_delay(timing_data.timing_delays.del_left_glb_pouty2.val)
+    val["del_left_SB_pouty2"] = convert_delay(timing_data.timing_delays.del_left_SB_pouty2.val)
+
+    val["del_CPE_CP_Q"] = convert_delay(timing_data.timing_delays.del_CPE_CP_Q.val)
+    val["del_CPE_S_Q"] = convert_delay(timing_data.timing_delays.del_CPE_S_Q.val)
+    val["del_CPE_R_Q"] = convert_delay(timing_data.timing_delays.del_CPE_R_Q.val)
+    val["del_CPE_D_Q"] = convert_delay(timing_data.timing_delays.del_CPE_D_Q.val)
+
+    val["del_RAM_CLK_DO"] = convert_delay(timing_data.timing_delays.del_RAM_CLK_DO.val)
+
+    val["del_GLBOUT_sb_big"] = convert_delay(timing_data.timing_delays.del_GLBOUT_sb_big.val)
+
+    val["del_sb_drv"] = convert_delay(timing_data.timing_delays.del_sb_drv.val)
+
+    val["del_CP_carry_path"] = convert_delay(timing_data.timing_delays.del_CP_carry_path.val)
+    val["del_CP_prop_path"] = convert_delay(timing_data.timing_delays.del_CP_prop_path.val)
+
+
+    val["del_special_RAM_I"] = convert_delay(timing_data.timing_delays.del_special_RAM_I.val)
+    val["del_RAMO_xOBF"] = convert_delay(timing_data.timing_delays.del_RAMO_xOBF.val)
+    val["del_GLBOUT_IO_SEL"] = convert_delay(timing_data.timing_delays.del_GLBOUT_IO_SEL.val)
+
+    val["del_IO_SEL_Q_out"] = convert_delay(timing_data.timing_delays.del_IO_SEL_Q_out.val)
+    val["del_IO_SEL_Q_in"] = convert_delay(timing_data.timing_delays.del_IO_SEL_Q_in.val)
+
+    val["in_delayline_per_stage"] = convert_delay(timing_data.timing_delays.in_delayline_per_stage.val)
+    val["out_delayline_per_stage"] = convert_delay(timing_data.timing_delays.out_delayline_per_stage.val)
+
+    val["del_IBFdel_IBF"] = convert_delay(timing_data.timing_delays.del_IBF.val)
+
+    val["del_OBF"] = convert_delay(timing_data.timing_delays.del_OBF.val)
+    val["del_r_OBF"] = convert_delay(timing_data.timing_delays.del_r_OBF.val)
+
+    val["del_TOBF_ctrl"] = convert_delay(timing_data.timing_delays.del_TOBF_ctrl.val)
+
+    val["del_LVDS_IBF"] = convert_delay(timing_data.timing_delays.del_LVDS_IBF.val)
+
+    val["del_LVDS_OBF"] = convert_delay(timing_data.timing_delays.del_LVDS_OBF.val)
+    val["del_ddel_LVDS_r_OBFummy"] = convert_delay(timing_data.timing_delays.del_LVDS_r_OBF.val)
+
+    val["del_LVDS_TOBF_ctrl"] = convert_delay(timing_data.timing_delays.del_LVDS_TOBF_ctrl.val)
+
+    val["del_CP_clkin"] = convert_delay(timing_data.timing_delays.del_CP_clkin.val)
+    val["del_CP_enin"] = convert_delay(timing_data.timing_delays.del_CP_enin.val)
+
+    val["del_preplace"] = convert_delay(timing_data.timing_delays.del_preplace.val)
 
     return val
