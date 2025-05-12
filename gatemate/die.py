@@ -106,15 +106,15 @@ def is_ram(x,y):
     return x in [33,65,97,129] and y in [1,17,33,49,65,81,97,113]
 
 def get_full_tile_loc_str(x,y):
-    tile_x = ((x-1)+16) % 8
-    tile_y = ((y-1)+16) % 8
-    tile   = (((x+16-1) // 8)+2) % 4
+    tile_x = ((x-1)+16) % 8 + 1
+    tile_y = ((y-1)+16) % 8 + 1
+    tile   = ((((x+16-1) // 8)+2) % 4) + 1
 
     return f"t{tile}_x{tile_x}_y{tile_y}"
 
 def get_tile_loc_str(x,y):
-    tile_x = ((x-1)+16) % 8
-    tile_y = ((y-1)+16) % 8
+    tile_x = ((x-1)+16) % 8 + 1
+    tile_y = ((y-1)+16) % 8 + 1
 
     return f"x{tile_x}_y{tile_y}"
 
@@ -231,6 +231,7 @@ class Connection:
     x : int
     y : int
     name : str
+    delay: str
 
 @dataclass(eq=True, order=True)
 class TileInfo:
@@ -3191,10 +3192,10 @@ class Die:
                     self.gpio_to_loc[f"GPIO_{io.bank}_{io.port}[{io.num}]"]  = Location(x, y)
                     self.io_pad_names[io.bank][io.port][io.num] = Location(x, y)
 
-    def create_conn(self, src_x,src_y, src, dst_x, dst_y, dst):
+    def create_conn(self, src_x,src_y, src, dst_x, dst_y, dst, delay=""):
         key_val = f"{src_x + self.offset_x}/{src_y + self.offset_y}/{src}"
-        key  = Connection(src_x + self.offset_x, src_y + self.offset_y, src)
-        item = Connection(dst_x + self.offset_x, dst_y + self.offset_y, dst)
+        key  = Connection(src_x + self.offset_x, src_y + self.offset_y, src, "")
+        item = Connection(dst_x + self.offset_x, dst_y + self.offset_y, dst, delay)
         if key_val not in self.conn:
             self.conn[key_val] = list()
             self.conn[key_val].append(key)
@@ -3221,17 +3222,18 @@ class Die:
         return list()
 
     def create_cpe(self, x,y):
-        self.create_conn(x,y,"IM.P01.Y", x,y,"CPE.IN1")
-        self.create_conn(x,y,"IM.P02.Y", x,y,"CPE.IN2")
-        self.create_conn(x,y,"IM.P03.Y", x,y,"CPE.IN3")
-        self.create_conn(x,y,"IM.P04.Y", x,y,"CPE.IN4")
-        self.create_conn(x,y,"IM.P05.Y", x,y,"CPE.IN5")
-        self.create_conn(x,y,"IM.P06.Y", x,y,"CPE.IN6")
-        self.create_conn(x,y,"IM.P07.Y", x,y,"CPE.IN7")
-        self.create_conn(x,y,"IM.P08.Y", x,y,"CPE.IN8")
-        self.create_conn(x,y,"IM.P09.Y", x,y,"CPE.CLK")
-        self.create_conn(x,y,"IM.P10.Y", x,y,"CPE.EN")
-        self.create_conn(x,y,"IM.P11.Y", x,y,"CPE.SR")
+        delay = f"im_{get_tile_loc_str(x,y)}"
+        self.create_conn(x,y,"IM.P01.Y", x,y,"CPE.IN1", f"{delay}_p1_d0_path2") # TODO: fix, d0 used only
+        self.create_conn(x,y,"IM.P02.Y", x,y,"CPE.IN2", f"{delay}_p2_d0_path2")
+        self.create_conn(x,y,"IM.P03.Y", x,y,"CPE.IN3", f"{delay}_p3_d0_path2")
+        self.create_conn(x,y,"IM.P04.Y", x,y,"CPE.IN4", f"{delay}_p4_d0_path2")
+        self.create_conn(x,y,"IM.P05.Y", x,y,"CPE.IN5", f"{delay}_p5_d0_path2")
+        self.create_conn(x,y,"IM.P06.Y", x,y,"CPE.IN6", f"{delay}_p6_d0_path2")
+        self.create_conn(x,y,"IM.P07.Y", x,y,"CPE.IN7", f"{delay}_p7_d0_path2")
+        self.create_conn(x,y,"IM.P08.Y", x,y,"CPE.IN8", f"{delay}_p8_d0_path2")
+        self.create_conn(x,y,"IM.P09.Y", x,y,"CPE.CLK", f"{delay}_p9_d0_path2")
+        self.create_conn(x,y,"IM.P10.Y", x,y,"CPE.EN", f"{delay}_p10_d0_path2")
+        self.create_conn(x,y,"IM.P11.Y", x,y,"CPE.SR", f"{delay}_p11_d0_path2")
         if is_cpe(x,y-1):
             self.create_conn(x,y-1,"CPE.COUTY1", x,y,"CPE.CINY1")
             self.create_conn(x,y-1,"CPE.COUTY2", x,y,"CPE.CINY2")
@@ -3247,22 +3249,23 @@ class Die:
 
             # D0 - D3 are from nearby SBs
             offset = 2 if is_sb(x,y) else 1
-            self.create_conn(x-offset,y,f"{get_sb_type(x-offset,y)}.P{plane}.Y1", x,y,f"IM.P{plane}.D0")
-            self.create_conn(x,y-offset,f"{get_sb_type(x,y-offset)}.P{plane}.Y2", x,y,f"IM.P{plane}.D1")
-            self.create_conn(x+offset,y,f"{get_sb_type(x+offset,y)}.P{plane}.Y3", x,y,f"IM.P{plane}.D2")
-            self.create_conn(x,y+offset,f"{get_sb_type(x,y+offset)}.P{plane}.Y4", x,y,f"IM.P{plane}.D3")
+            delay = f"im_{get_tile_loc_str(x,y)}_p{p}"
+            self.create_conn(x-offset,y,f"{get_sb_type(x-offset,y)}.P{plane}.Y1", x,y,f"IM.P{plane}.D0", f"{delay}_d0_path1")
+            self.create_conn(x,y-offset,f"{get_sb_type(x,y-offset)}.P{plane}.Y2", x,y,f"IM.P{plane}.D1", f"{delay}_d1_path1")
+            self.create_conn(x+offset,y,f"{get_sb_type(x+offset,y)}.P{plane}.Y3", x,y,f"IM.P{plane}.D2", f"{delay}_d2_path1")
+            self.create_conn(x,y+offset,f"{get_sb_type(x,y+offset)}.P{plane}.Y4", x,y,f"IM.P{plane}.D3", f"{delay}_d3_path1")
 
             # D4 and D5 are from diagonal INMUX
             if is_cpe(x-1,y-1):
-                self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4")
+                self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4", f"{delay}_d4_path1")
             if is_cpe(x+1,y+1):
-                self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5")
+                self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5", f"{delay}_d5_path1")
 
             # D6 and D7 are from alternate planes
             alt = f"{alt_plane(0,p):02d}"
-            self.create_conn(x,y,f"IM.P{alt}.Y", x,y,f"IM.P{plane}.D6")
+            self.create_conn(x,y,f"IM.P{alt}.Y", x,y,f"IM.P{plane}.D6", f"{delay}_d6_path1")
             alt = f"{alt_plane(1,p):02d}"
-            self.create_conn(x,y,f"IM.P{alt}.Y", x,y,f"IM.P{plane}.D7")
+            self.create_conn(x,y,f"IM.P{alt}.Y", x,y,f"IM.P{plane}.D7", f"{delay}_d7_path1")
 
     def create_sb(self, x,y):
         x_0,y_0 = base_loc(x,y)
@@ -3270,6 +3273,7 @@ class Die:
 
         for p in range(1,13):
             plane = f"{p:02d}"
+            delay = f"sb_del_{get_full_tile_loc_str(x,y)}"
             # Handling input D0
             if is_cpe(x,y):
                 # Core section SBs are connected to CPE
@@ -3279,10 +3283,10 @@ class Die:
                     y_cpe = y_0 + (1 if (p-1) & 1 else 0)
                     # alternate patterns for lower-left SB(1,1) and upper-right SB(2,2)
                     out = [ 2, 1, 2, 1, 1, 2, 1, 2] if x & 1 else [ 1, 2, 1, 2, 2, 1, 2, 1]
-                    self.create_conn(x_cpe,y_cpe,f"CPE.OUT{out[p-1]}", x,y,f"{sb_type}.P{plane}.D0")
+                    self.create_conn(x_cpe,y_cpe,f"CPE.OUT{out[p-1]}", x,y,f"{sb_type}.P{plane}.D0", f"{delay}_p{p}_d0_s0")
                 else:
                     # planes 9..12
-                    self.create_conn(x,y,f"OM.P{plane}.Y", x,y,f"{sb_type}.P{plane}.D0")
+                    self.create_conn(x,y,f"OM.P{plane}.Y", x,y,f"{sb_type}.P{plane}.D0", f"{delay}_p{p}_d0_s0")
             # Handling GPIO connections is done in create_io
             # Handling inputs D2_* till D7_*
             distances = [2, 4, 8, 12, 16, 20] if is_sb_big(x,y) else [2, 4]
@@ -3311,7 +3315,7 @@ class Die:
                                 src = f"SB_DRIVE.P{plane}.D{direction+1}.OUT"
                             else:
                                 src = f"SB_DRIVE.P{plane}.D{direction+1}.OUT_NOINV"
-                        self.create_conn(sb_x,sb_y, src, x,y,f"{get_sb_type(x,y)}.P{plane}.D{i+2}_{direction+1}")
+                        self.create_conn(sb_x,sb_y, src, x,y,f"{get_sb_type(x,y)}.P{plane}.D{i+2}_{direction+1}", f"{delay}_p{p}_d{direction+1}_s{i+2}")
 
             if is_sb_big(x,y):
                 for direction in range(4):
@@ -3320,11 +3324,11 @@ class Die:
             # Diagonal inputs
             # X12 and X34 on edges are unconnected
             if is_sb(x-1,y-1):
-                self.create_conn(x-1,y-1,f"{get_sb_type(x-1,y-1)}.P{plane}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X12")
+                self.create_conn(x-1,y-1,f"{get_sb_type(x-1,y-1)}.P{plane}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X12", f"{delay}_p{p}_d0_s6")
             if is_sb(x+1,y+1):
-                self.create_conn(x+1,y+1,f"{get_sb_type(x+1,y+1)}.P{plane}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X34")
-            self.create_conn(x,y,f"{get_sb_type(x,y)}.P{prev_plane(p):02d}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X14")
-            self.create_conn(x,y,f"{get_sb_type(x,y)}.P{next_plane(p):02d}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X23")
+                self.create_conn(x+1,y+1,f"{get_sb_type(x+1,y+1)}.P{plane}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X34", f"{delay}_p{p}_d0_s4")
+            self.create_conn(x,y,f"{get_sb_type(x,y)}.P{prev_plane(p):02d}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X14", f"{delay}_p{p}_d0_s5")
+            self.create_conn(x,y,f"{get_sb_type(x,y)}.P{next_plane(p):02d}.YDIAG", x,y,f"{get_sb_type(x,y)}.P{plane}.X23", f"{delay}_p{p}_d0_s7")
 
     def create_outmux(self, x,y):
         x_0,y_0 = base_loc(x,y)
@@ -3332,10 +3336,11 @@ class Die:
             plane = f"{p:02d}"
             # alternating patters depending of plane and outmux position
             outputs = [2, 2, 1, 1] if p % 2 == x & 1 else [1, 1, 2, 2]
-            self.create_conn(x_0,   y_0,   f"CPE.OUT{outputs[0]}", x,y, f"OM.P{plane}.D0")
-            self.create_conn(x_0,   y_0+1, f"CPE.OUT{outputs[1]}", x,y, f"OM.P{plane}.D1")
-            self.create_conn(x_0+1, y_0,   f"CPE.OUT{outputs[2]}", x,y, f"OM.P{plane}.D2")
-            self.create_conn(x_0+1, y_0+1, f"CPE.OUT{outputs[3]}", x,y, f"OM.P{plane}.D3")
+            delay = f"om_{get_tile_loc_str(x,y)}"
+            self.create_conn(x_0,   y_0,   f"CPE.OUT{outputs[0]}", x,y, f"OM.P{plane}.D0", f"{delay}_p{p}_d0")
+            self.create_conn(x_0,   y_0+1, f"CPE.OUT{outputs[1]}", x,y, f"OM.P{plane}.D1", f"{delay}_p{p}_d1")
+            self.create_conn(x_0+1, y_0,   f"CPE.OUT{outputs[2]}", x,y, f"OM.P{plane}.D2", f"{delay}_p{p}_d2")
+            self.create_conn(x_0+1, y_0+1, f"CPE.OUT{outputs[3]}", x,y, f"OM.P{plane}.D3", f"{delay}_p{p}_d3")
 
     def get_pin_real_name(self, prim_name, pin):
         prim_type = prim_name

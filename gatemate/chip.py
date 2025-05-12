@@ -186,6 +186,9 @@ def get_all_devices():
 def get_device(name):
     return CCGM1_DEVICES[name]
 
+def convert_delay(d):
+    return TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
+
 def get_timings(dly_path, name):
     val = dict()
     timing_data = decompress_timing(os.path.join(dly_path, "..", "delay", f"cc_{name}_dly.dly"))
@@ -198,8 +201,11 @@ def get_timings(dly_path, name):
                             d = timing_data.SB_del_tile_arr[i1][i2][i3][i4][i5][i6]
                             if d.rise.min == 123456: # not connected
                                 continue
-                            name = f"sb_del_t{i1+1}_x{i2+1}_y{i3+1}_p{i4+1}_d{i5}_s{i6}"
-                            val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
+                            x = i2+1
+                            y = i3+1
+                            y = 2*y if (x % 2 == 0) else 2*y-1
+                            name = f"sb_del_t{i1+1}_x{x}_y{y}_p{i4+1}_d{i5}_s{i6}"
+                            val[name] = convert_delay(d)
 
     for i1 in range(2):  # [1..2]
         for i2 in range(8):  # [1..8]
@@ -210,7 +216,7 @@ def get_timings(dly_path, name):
                         if d.rise.min == 123456: # not connected
                             continue
                         name = f"im_x{i2+1}_y{i3+1}_p{i4+1}_d{i5}_path{i1+1}"
-                        val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
+                        val[name] = convert_delay(d)
 
     for i1 in range(8):  # [1..8]
         for i2 in range(8):  # [1..8]
@@ -220,6 +226,6 @@ def get_timings(dly_path, name):
                     if d.rise.min == 123456: # not connected
                         continue
                     name = f"om_x{i1+1}_y{i2+1}_p{i3+9}_d{i4}"
-                    val[name] = TimingDelay(min(d.rise.min, d.fall.min), max(d.rise.max, d.fall.max))
+                    val[name] = convert_delay(d)
 
     return val
