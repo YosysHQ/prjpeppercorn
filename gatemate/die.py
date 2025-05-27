@@ -921,6 +921,10 @@ PRIMITIVES_PINS = {
         Pin("FRD_ADDRX[14]", PinType.OUTPUT,"RAM_WIRE"),
         Pin("FRD_ADDR[15]", PinType.OUTPUT,"RAM_WIRE"),
         Pin("FRD_ADDRX[15]", PinType.OUTPUT,"RAM_WIRE"),
+        Pin("CLOCK1", PinType.INPUT,"RAM_WIRE"),
+        Pin("CLOCK2", PinType.INPUT,"RAM_WIRE"),
+        Pin("CLOCK3", PinType.INPUT,"RAM_WIRE"),
+        Pin("CLOCK4", PinType.INPUT,"RAM_WIRE"),
     ],
     "SERDES" : [
         Pin("TX_DETECT_RX_I", PinType.INPUT,"SERDES_WIRE"),
@@ -3410,6 +3414,10 @@ class Die:
 
     def create_ram(self, x, y):
         self.create_ram_io_conn("RAM", "RAM", x, y)
+        self.create_conn(PLL_X_POS, PLL_Y_POS, "GLBOUT.GLB0", x, y, "RAM.CLOCK1")
+        self.create_conn(PLL_X_POS, PLL_Y_POS, "GLBOUT.GLB1", x, y, "RAM.CLOCK2")
+        self.create_conn(PLL_X_POS, PLL_Y_POS, "GLBOUT.GLB2", x, y, "RAM.CLOCK3")
+        self.create_conn(PLL_X_POS, PLL_Y_POS, "GLBOUT.GLB3", x, y, "RAM.CLOCK4")
 
     def create_in_die_connections(self, conn):
         self.conn = conn
