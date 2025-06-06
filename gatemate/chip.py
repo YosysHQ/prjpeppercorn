@@ -140,7 +140,7 @@ class Chip:
                         flags = 0
                         # mark clock sources
                         if bank.bank == "W2" and p == "A" and num in [5,6,7,8]:
-                            flags = 1
+                            flags = 8-num+1 # will be 1-4 for different clock sources
                         if pad_name not in not_exist:
                             pads.append(Pad(loc.x + d.offset_x,loc.y + d.offset_y,pad_name,"GPIO","",self.get_bank_number(bank.bank),flags))
         return pads

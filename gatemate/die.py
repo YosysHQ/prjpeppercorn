@@ -198,7 +198,6 @@ class PinConstr:
     rel_y : int
     output: int
     pin_num : int
-    skip: bool = False
 
 @dataclass(eq=True, order=True)
 class Group:
@@ -296,21 +295,66 @@ PRIMITIVES_PINS = {
         Pin("CLOCK3", PinType.INPUT, "GPIO_WIRE"),
         Pin("CLOCK4", PinType.INPUT, "GPIO_WIRE"),
     ],
-    "BUFG" : [
-        Pin("I"     , PinType.INPUT, "BUFG_WIRE", True),
-        Pin("O"     , PinType.OUTPUT,"BUFG_WIRE", True),
+    "CLKIN" : [
+        Pin("CLK0"     , PinType.INPUT, "CLKIN_WIRE"),
+        Pin("CLK1"     , PinType.INPUT, "CLKIN_WIRE"),
+        Pin("CLK2"     , PinType.INPUT, "CLKIN_WIRE"),
+        Pin("CLK3"     , PinType.INPUT, "CLKIN_WIRE"),
+        Pin("SER_CLK"  , PinType.INPUT, "CLKIN_WIRE"),
+        Pin("CLK_REF0" , PinType.OUTPUT,"CLKIN_WIRE"),
+        Pin("CLK_REF1" , PinType.OUTPUT,"CLKIN_WIRE"),
+        Pin("CLK_REF2" , PinType.OUTPUT,"CLKIN_WIRE"),
+        Pin("CLK_REF3" , PinType.OUTPUT,"CLKIN_WIRE"),
+    ],
+    "GLBOUT" : [
+        Pin("CLK0_0"       , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK90_0"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK180_0"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK270_0"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_REF_OUT0" , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_GLB0"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_FB0"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_FB0"      , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("GLB0"         , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("CLK0_1"       , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK90_1"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK180_1"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK270_1"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_REF_OUT1" , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_GLB1"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_FB1"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_FB1"      , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("GLB1"         , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("CLK0_2"       , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK90_2"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK180_2"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK270_2"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_REF_OUT2" , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_GLB2"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_FB2"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_FB2"      , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("GLB2"         , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("CLK0_3"       , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK90_3"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK180_3"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK270_3"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_REF_OUT3" , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_GLB3"     , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("USR_FB3"      , PinType.INPUT, "GLBOUT_WIRE"),
+        Pin("CLK_FB3"      , PinType.OUTPUT,"GLBOUT_WIRE"),
+        Pin("GLB3"         , PinType.OUTPUT,"GLBOUT_WIRE"),
     ],
     "PLL" : [
-        Pin("CLK_REF",             PinType.INPUT, "PLL_WIRE", True),
+        Pin("CLK_REF",             PinType.INPUT, "PLL_WIRE"),
         Pin("USR_CLK_REF",         PinType.INPUT, "PLL_WIRE"),
         Pin("USR_SEL_A_B",         PinType.INPUT, "PLL_WIRE"),
-        Pin("CLK_FEEDBACK",        PinType.INPUT, "PLL_WIRE", True),
+        Pin("CLK_FEEDBACK",        PinType.INPUT, "PLL_WIRE"),
         Pin("USR_LOCKED_STDY_RST", PinType.INPUT, "PLL_WIRE"),
-        Pin("CLK0",                PinType.OUTPUT,"PLL_WIRE", True),
-        Pin("CLK90",               PinType.OUTPUT,"PLL_WIRE", True),
-        Pin("CLK180",              PinType.OUTPUT,"PLL_WIRE", True),
-        Pin("CLK270",              PinType.OUTPUT,"PLL_WIRE", True),
-        Pin("CLK_REF_OUT",         PinType.OUTPUT,"PLL_WIRE", True),
+        Pin("CLK0",                PinType.OUTPUT,"PLL_WIRE"),
+        Pin("CLK90",               PinType.OUTPUT,"PLL_WIRE"),
+        Pin("CLK180",              PinType.OUTPUT,"PLL_WIRE"),
+        Pin("CLK270",              PinType.OUTPUT,"PLL_WIRE"),
+        Pin("CLK_REF_OUT",         PinType.OUTPUT,"PLL_WIRE"),
         Pin("USR_PLL_LOCKED_STDY", PinType.OUTPUT,"PLL_WIRE"),
         Pin("USR_PLL_LOCKED",      PinType.OUTPUT,"PLL_WIRE"),
     ],
@@ -1288,14 +1332,12 @@ def get_primitives_for_type(type):
     if "GPIO" in type:
         primitives.append(Primitive("GPIO","GPIO",0))
     if "PLL" in type:
-        primitives.append(Primitive("BUFG0","BUFG",0))
-        primitives.append(Primitive("BUFG1","BUFG",1))
-        primitives.append(Primitive("BUFG2","BUFG",2))
-        primitives.append(Primitive("BUFG3","BUFG",3))
-        primitives.append(Primitive("PLL0","PLL",4))
-        primitives.append(Primitive("PLL1","PLL",5))
-        primitives.append(Primitive("PLL2","PLL",6))
-        primitives.append(Primitive("PLL3","PLL",7))
+        primitives.append(Primitive("CLKIN","CLKIN",0))
+        primitives.append(Primitive("GLBOUT","GLBOUT",1))
+        primitives.append(Primitive("PLL0","PLL",2))
+        primitives.append(Primitive("PLL1","PLL",3))
+        primitives.append(Primitive("PLL2","PLL",4))
+        primitives.append(Primitive("PLL3","PLL",5))
     if "CFG_CTRL" in type:
         primitives.append(Primitive("CFG_CTRL","CFG_CTRL",2))
         primitives.append(Primitive("USR_RSTN","USR_RSTN",3))
@@ -2255,37 +2297,20 @@ def get_pins_constraint(type_name, prim_name, prim_type):
         val.append(PinConstr("CLK90", -PLL_X_POS+40 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
         val.append(PinConstr("CLK180", -PLL_X_POS+41 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
         val.append(PinConstr("CLK270", -PLL_X_POS+42 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
-        # not connected directly
-        val.append(PinConstr("CLK_FEEDBACK", -PLL_X_POS+1, -PLL_Y_POS+128 - pll_num, RAM_OUTPUT, 2, skip=True))
-    elif prim_type=="BUFG":
-        bufg_num = int(prim_name[4])
-        # not connected directly
-        val.append(PinConstr("I", -PLL_X_POS+1, -PLL_Y_POS+128 - bufg_num, RAM_OUTPUT, 1, skip=True))
+    elif prim_type=="GLOBOUT":
+        val.append(PinConstr("USR_GLB0", -PLL_X_POS+1, -PLL_Y_POS+128, RAM_OUTPUT, 1))
+        val.append(PinConstr("USR_GLB1", -PLL_X_POS+1, -PLL_Y_POS+127, RAM_OUTPUT, 1))
+        val.append(PinConstr("USR_GLB2", -PLL_X_POS+1, -PLL_Y_POS+126, RAM_OUTPUT, 1))
+        val.append(PinConstr("USR_GLB3", -PLL_X_POS+1, -PLL_Y_POS+125, RAM_OUTPUT, 1))
+        val.append(PinConstr("USR_FB0", -PLL_X_POS+1, -PLL_Y_POS+128, RAM_OUTPUT, 2))
+        val.append(PinConstr("USR_FB1", -PLL_X_POS+1, -PLL_Y_POS+127, RAM_OUTPUT, 2))
+        val.append(PinConstr("USR_FB2", -PLL_X_POS+1, -PLL_Y_POS+126, RAM_OUTPUT, 2))
+        val.append(PinConstr("USR_FB3", -PLL_X_POS+1, -PLL_Y_POS+125, RAM_OUTPUT, 2))
 
     return val
 
 def get_pin_connection_name(prim, pin):
-    if prim.type == "BUFG":
-        if pin.dir == PinType.INPUT:
-            return f"GLBOUT.CLK_SEL_INT_{prim.z}"
-        else:
-            return f"GLBOUT.GLB{prim.z}"
-    elif prim.type == "PLL":
-        if pin.name == "CLK_REF":
-            return f"CLKIN.CLK_REF_{prim.z - 4}"
-        elif pin.name == "CLK0":
-            return f"GLBOUT.CLK0_{prim.z - 4}"
-        elif pin.name == "CLK90":
-            return f"GLBOUT.CLK90_{prim.z - 4}"
-        elif pin.name == "CLK180":
-            return f"GLBOUT.CLK180_{prim.z - 4}"
-        elif pin.name == "CLK270":
-            return f"GLBOUT.CLK270_{prim.z - 4}"
-        elif pin.name == "CLK_REF_OUT":
-            return f"GLBOUT.CLK_REF_OUT{prim.z - 4}"
-        elif pin.name == "CLK_FEEDBACK":
-            return f"GLBOUT.CLK_FB{prim.z - 4}"
-    elif prim.type == "CPE_HALF_U":
+    if prim.type == "CPE_HALF_U":
         match pin.name:
             case "OUT":
                 return "CPE.OUT2"
@@ -2512,74 +2537,6 @@ def get_endpoints_for_type(type):
         create_wire("TES.SIG_SEL3_int", type="TES_INT_WIRE")
         create_wire("TES.SIG_SEL4_int", type="TES_INT_WIRE")
 
-    if "PLL" in type:
-        # CLKIN
-        create_wire("CLKIN.CLK0", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK1", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK2", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK3", type="CLKIN_WIRE")
-        create_wire("CLKIN.SER_CLK", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK_REF_INT0", type="CLKIN_INT_WIRE") # internal
-        create_wire("CLKIN.CLK_REF_INT1", type="CLKIN_INT_WIRE") # internal
-        create_wire("CLKIN.CLK_REF_INT2", type="CLKIN_INT_WIRE") # internal
-        create_wire("CLKIN.CLK_REF_INT3", type="CLKIN_INT_WIRE") # internal
-        create_wire("CLKIN.CLK_REF_0", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK_REF_1", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK_REF_2", type="CLKIN_WIRE")
-        create_wire("CLKIN.CLK_REF_3", type="CLKIN_WIRE")
-        # GLBOUT
-        create_wire("GLBOUT.CLK0_0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK90_0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK180_0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK270_0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_INT_0", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_SEL_INT_0", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_REF_OUT0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.USR_GLB0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.GLB0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.FB_INT_0", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.USR_FB0", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_FB0", type="GLBOUT_WIRE")
-
-        create_wire("GLBOUT.CLK0_1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK90_1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK180_1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK270_1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_INT_1", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_SEL_INT_1", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_REF_OUT1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.USR_GLB1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.GLB1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.FB_INT_1", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.USR_FB1", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_FB1", type="GLBOUT_WIRE")
-
-        create_wire("GLBOUT.CLK0_2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK90_2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK180_2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK270_2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_INT_2", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_SEL_INT_2", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_REF_OUT2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.USR_GLB2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.GLB2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.FB_INT_2", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.USR_FB2", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_FB2", type="GLBOUT_WIRE")
-
-        create_wire("GLBOUT.CLK0_3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK90_3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK180_3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK270_3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_INT_3", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_SEL_INT_3", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.CLK_REF_OUT3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.USR_GLB3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.GLB3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.FB_INT_3", type="GLBOUT_INT_WIRE")
-        create_wire("GLBOUT.USR_FB3", type="GLBOUT_WIRE")
-        create_wire("GLBOUT.CLK_FB3", type="GLBOUT_WIRE")
-
     return wires
 
 def get_mux_connections_for_type(type):
@@ -2760,139 +2717,17 @@ def get_mux_connections_for_type(type):
             create_mux(f"TES.SIG_SEL{sel}_int", f"TES.MDIE2.P{p}", 1, 1, False, f"TES.SEL_MDIE{p}", delay="del_dummy")
 
     if "PLL" in type:
-        # CLKIN
-
-        create_mux("CLKIN.CLK0", "CLKIN.CLK_REF_INT0", 3, 0, False, "CLKIN.REF0", config=True, delay="clkin_CLK0_I_CLK_OUT0")
-        create_mux("CLKIN.CLK1", "CLKIN.CLK_REF_INT0", 3, 1, False, "CLKIN.REF0", config=True, delay="clkin_CLK1_I_CLK_OUT0")
-        create_mux("CLKIN.CLK2", "CLKIN.CLK_REF_INT0", 3, 2, False, "CLKIN.REF0", config=True, delay="clkin_CLK2_I_CLK_OUT0")
-        create_mux("CLKIN.CLK3", "CLKIN.CLK_REF_INT0", 3, 3, False, "CLKIN.REF0", config=True, delay="clkin_CLK3_I_CLK_OUT0")
-        create_mux("CLKIN.SER_CLK", "CLKIN.CLK_REF_INT0", 3, 4, False, "CLKIN.REF0", config=True, delay="clkin_SERDES_CLK_CLK_OUT0")
-        create_mux("CLKIN.CLK_REF_INT0", "CLKIN.CLK_REF_0", 1, 0, False, "CLKIN.REF0_INV", config=True, delay="del_dummy")
-
-        create_mux("CLKIN.CLK0", "CLKIN.CLK_REF_INT1", 3, 0, False, "CLKIN.REF1", config=True, delay="clkin_CLK0_I_CLK_OUT1")
-        create_mux("CLKIN.CLK1", "CLKIN.CLK_REF_INT1", 3, 1, False, "CLKIN.REF1", config=True, delay="clkin_CLK1_I_CLK_OUT1")
-        create_mux("CLKIN.CLK2", "CLKIN.CLK_REF_INT1", 3, 2, False, "CLKIN.REF1", config=True, delay="clkin_CLK2_I_CLK_OUT1")
-        create_mux("CLKIN.CLK3", "CLKIN.CLK_REF_INT1", 3, 3, False, "CLKIN.REF1", config=True, delay="clkin_CLK3_I_CLK_OUT1")
-        create_mux("CLKIN.SER_CLK", "CLKIN.CLK_REF_INT1", 3, 4, False, "CLKIN.REF1", config=True, delay="clkin_SERDES_CLK_CLK_OUT1")
-        create_mux("CLKIN.CLK_REF_INT1", "CLKIN.CLK_REF_1", 1, 0, False, "CLKIN.REF1_INV", config=True, delay="del_dummy")
-
-        create_mux("CLKIN.CLK0", "CLKIN.CLK_REF_INT2", 3, 0, False, "CLKIN.REF2", config=True, delay="clkin_CLK0_I_CLK_OUT2")
-        create_mux("CLKIN.CLK1", "CLKIN.CLK_REF_INT2", 3, 1, False, "CLKIN.REF2", config=True, delay="clkin_CLK1_I_CLK_OUT2")
-        create_mux("CLKIN.CLK2", "CLKIN.CLK_REF_INT2", 3, 2, False, "CLKIN.REF2", config=True, delay="clkin_CLK2_I_CLK_OUT2")
-        create_mux("CLKIN.CLK3", "CLKIN.CLK_REF_INT2", 3, 3, False, "CLKIN.REF2", config=True, delay="clkin_CLK3_I_CLK_OUT2")
-        create_mux("CLKIN.SER_CLK", "CLKIN.CLK_REF_INT2", 3, 4, False, "CLKIN.REF2", config=True, delay="clkin_SERDES_CLK_CLK_OUT2")
-        create_mux("CLKIN.CLK_REF_INT2", "CLKIN.CLK_REF_2", 1, 0, False, "CLKIN.REF2_INV", config=True, delay="del_dummy")
-
-        create_mux("CLKIN.CLK0", "CLKIN.CLK_REF_INT3", 3, 0, False, "CLKIN.REF3", config=True, delay="clkin_CLK0_I_CLK_OUT3")
-        create_mux("CLKIN.CLK1", "CLKIN.CLK_REF_INT3", 3, 1, False, "CLKIN.REF3", config=True, delay="clkin_CLK1_I_CLK_OUT3")
-        create_mux("CLKIN.CLK2", "CLKIN.CLK_REF_INT3", 3, 2, False, "CLKIN.REF3", config=True, delay="clkin_CLK2_I_CLK_OUT3")
-        create_mux("CLKIN.CLK3", "CLKIN.CLK_REF_INT3", 3, 3, False, "CLKIN.REF3", config=True, delay="clkin_CLK3_I_CLK_OUT3")
-        create_mux("CLKIN.SER_CLK", "CLKIN.CLK_REF_INT3", 3, 4, False, "CLKIN.REF3", config=True, delay="clkin_SERDES_CLK_CLK_OUT3")
-        create_mux("CLKIN.CLK_REF_INT3", "CLKIN.CLK_REF_3", 1, 0, False, "CLKIN.REF3_INV", config=True, delay="del_dummy")
-
-        # GLBOUT
-
-        create_mux("GLBOUT.CLK_REF_OUT0", "GLBOUT.CLK_INT_0", 3, 0, False, "GLBOUT.GLB0", config=True, delay="glbout_CLKREF_0_CLOCK0")
-        create_mux("GLBOUT.CLK0_1", "GLBOUT.CLK_INT_0", 3, 1, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK0_1_CLOCK0")
-        create_mux("GLBOUT.CLK0_2", "GLBOUT.CLK_INT_0", 3, 2, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK0_2_CLOCK0")
-        create_mux("GLBOUT.CLK0_3", "GLBOUT.CLK_INT_0", 3, 3, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK0_3_CLOCK0")
-        create_mux("GLBOUT.CLK0_0", "GLBOUT.CLK_INT_0", 3, 4, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK0_0_CLOCK0")
-        create_mux("GLBOUT.CLK90_0", "GLBOUT.CLK_INT_0", 3, 5, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK90_0_CLOCK0")
-        create_mux("GLBOUT.CLK180_0", "GLBOUT.CLK_INT_0", 3, 6, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK180_0_CLOCK0")
-        create_mux("GLBOUT.CLK270_0", "GLBOUT.CLK_INT_0", 3, 7, False, "GLBOUT.GLB0", config=True, delay="glbout_CLK270_0_CLOCK0")
-
-        create_mux("GLBOUT.CLK_INT_0", "GLBOUT.CLK_SEL_INT_0", 1, 0, False, "GLBOUT.USR_GLB0", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_GLB0", "GLBOUT.CLK_SEL_INT_0", 1, 1, False, "GLBOUT.USR_GLB0", config=True, delay="glbout_U_CLK0_CLOCK0")
-
-        create_mux("GLBOUT.CLK_SEL_INT_0", "GLBOUT.GLB0", 1, 1, False, "GLBOUT.GLB0_EN", config=True, delay="del_dummy")
-
-        create_mux("GLBOUT.GLB0", "GLBOUT.FB_INT_0", 2, 0, False, "GLBOUT.FB0", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB1", "GLBOUT.FB_INT_0", 2, 1, False, "GLBOUT.FB0", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB2", "GLBOUT.FB_INT_0", 2, 2, False, "GLBOUT.FB0", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB3", "GLBOUT.FB_INT_0", 2, 3, False, "GLBOUT.FB0", config=True, delay="glbout_FEEDBACK_delay")
-
-        create_mux("GLBOUT.FB_INT_0", "GLBOUT.CLK_FB0", 1, 0, False, "GLBOUT.USR_FB0", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_FB0", "GLBOUT.CLK_FB0",  1, 1, False, "GLBOUT.USR_FB0", config=True, delay="glbout_U_FB0_CLK_FB0")
-
-
-        create_mux("GLBOUT.CLK_REF_OUT1", "GLBOUT.CLK_INT_1", 3, 0, False, "GLBOUT.GLB1", config=True, delay="glbout_CLKREF_1_CLOCK1")
-        create_mux("GLBOUT.CLK90_0", "GLBOUT.CLK_INT_1", 3, 1, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK90_0_CLOCK1")
-        create_mux("GLBOUT.CLK90_2", "GLBOUT.CLK_INT_1", 3, 2, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK90_2_CLOCK1")
-        create_mux("GLBOUT.CLK90_3", "GLBOUT.CLK_INT_1", 3, 3, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK90_3_CLOCK1")
-        create_mux("GLBOUT.CLK0_1", "GLBOUT.CLK_INT_1", 3, 4, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK0_1_CLOCK1")
-        create_mux("GLBOUT.CLK90_1", "GLBOUT.CLK_INT_1", 3, 5, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK90_1_CLOCK1")
-        create_mux("GLBOUT.CLK180_1", "GLBOUT.CLK_INT_1", 3, 6, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK180_1_CLOCK1")
-        create_mux("GLBOUT.CLK270_1", "GLBOUT.CLK_INT_1", 3, 7, False, "GLBOUT.GLB1", config=True, delay="glbout_CLK270_1_CLOCK1")
-
-        create_mux("GLBOUT.CLK_INT_1", "GLBOUT.CLK_SEL_INT_1", 1, 0, False, "GLBOUT.USR_GLB1", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_GLB1", "GLBOUT.CLK_SEL_INT_1", 1, 1, False, "GLBOUT.USR_GLB1", config=True, delay="glbout_U_CLK1_CLOCK1")
-
-        create_mux("GLBOUT.CLK_SEL_INT_1", "GLBOUT.GLB1", 1, 1, False, "GLBOUT.GLB1_EN", config=True, delay="del_dummy")
-
-        create_mux("GLBOUT.GLB0", "GLBOUT.FB_INT_1", 2, 0, False, "GLBOUT.FB1", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB1", "GLBOUT.FB_INT_1", 2, 1, False, "GLBOUT.FB1", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB2", "GLBOUT.FB_INT_1", 2, 2, False, "GLBOUT.FB1", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB3", "GLBOUT.FB_INT_1", 2, 3, False, "GLBOUT.FB1", config=True, delay="glbout_FEEDBACK_delay")
-
-        create_mux("GLBOUT.FB_INT_1", "GLBOUT.CLK_FB1", 1, 0, False, "GLBOUT.USR_FB1", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_FB1", "GLBOUT.CLK_FB1",  1, 1, False, "GLBOUT.USR_FB1", config=True, delay="glbout_U_FB1_CLK_FB1")
-
-
-        create_mux("GLBOUT.CLK_REF_OUT2", "GLBOUT.CLK_INT_2", 3, 0, False, "GLBOUT.GLB2", config=True, delay="glbout_CLKREF_2_CLOCK2")
-        create_mux("GLBOUT.CLK180_0", "GLBOUT.CLK_INT_2", 3, 1, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK180_0_CLOCK2")
-        create_mux("GLBOUT.CLK180_1", "GLBOUT.CLK_INT_2", 3, 2, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK180_1_CLOCK2")
-        create_mux("GLBOUT.CLK180_3", "GLBOUT.CLK_INT_2", 3, 3, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK180_3_CLOCK2")
-        create_mux("GLBOUT.CLK0_2", "GLBOUT.CLK_INT_2", 3, 4, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK0_2_CLOCK2")
-        create_mux("GLBOUT.CLK90_2", "GLBOUT.CLK_INT_2", 3, 5, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK90_2_CLOCK2")
-        create_mux("GLBOUT.CLK180_2", "GLBOUT.CLK_INT_2", 3, 6, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK180_2_CLOCK2")
-        create_mux("GLBOUT.CLK270_2", "GLBOUT.CLK_INT_2", 3, 7, False, "GLBOUT.GLB2", config=True, delay="glbout_CLK270_2_CLOCK2")
-
-        create_mux("GLBOUT.CLK_INT_2", "GLBOUT.CLK_SEL_INT_2", 1, 0, False, "GLBOUT.USR_GLB2", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_GLB2", "GLBOUT.CLK_SEL_INT_2", 1, 1, False, "GLBOUT.USR_GLB2", config=True)
-
-        create_mux("GLBOUT.CLK_SEL_INT_2", "GLBOUT.GLB2", 1, 1, False, "GLBOUT.GLB2_EN", config=True, delay="del_dummy")
-
-        create_mux("GLBOUT.GLB0", "GLBOUT.FB_INT_2", 2, 0, False, "GLBOUT.FB2", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB1", "GLBOUT.FB_INT_2", 2, 1, False, "GLBOUT.FB2", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB2", "GLBOUT.FB_INT_2", 2, 2, False, "GLBOUT.FB2", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB3", "GLBOUT.FB_INT_2", 2, 3, False, "GLBOUT.FB2", config=True, delay="glbout_FEEDBACK_delay")
-
-        create_mux("GLBOUT.FB_INT_2", "GLBOUT.CLK_FB2", 1, 0, False, "GLBOUT.USR_FB2", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_FB2", "GLBOUT.CLK_FB2",  1, 1, False, "GLBOUT.USR_FB2", config=True, delay="glbout_U_FB2_CLK_FB2")
-
-        create_mux("GLBOUT.CLK_REF_OUT3", "GLBOUT.CLK_INT_3", 3, 0, False, "GLBOUT.GLB3", config=True, delay="glbout_CLKREF_3_CLOCK3")
-        create_mux("GLBOUT.CLK270_0", "GLBOUT.CLK_INT_3", 3, 1, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK270_0_CLOCK3")
-        create_mux("GLBOUT.CLK270_1", "GLBOUT.CLK_INT_3", 3, 2, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK270_1_CLOCK3")
-        create_mux("GLBOUT.CLK270_2", "GLBOUT.CLK_INT_3", 3, 3, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK270_2_CLOCK3")
-        create_mux("GLBOUT.CLK0_3", "GLBOUT.CLK_INT_3", 3, 4, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK0_3_CLOCK3")
-        create_mux("GLBOUT.CLK90_3", "GLBOUT.CLK_INT_3", 3, 5, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK90_3_CLOCK3")
-        create_mux("GLBOUT.CLK180_3", "GLBOUT.CLK_INT_3", 3, 6, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK180_3_CLOCK3")
-        create_mux("GLBOUT.CLK270_3", "GLBOUT.CLK_INT_3", 3, 7, False, "GLBOUT.GLB3", config=True, delay="glbout_CLK270_3_CLOCK3")
-
-        create_mux("GLBOUT.CLK_INT_3", "GLBOUT.CLK_SEL_INT_3", 1, 0, False, "GLBOUT.USR_GLB3", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_GLB3", "GLBOUT.CLK_SEL_INT_3", 1, 1, False, "GLBOUT.USR_GLB3", config=True, delay="glbout_U_CLK3_CLOCK3")
-
-        create_mux("GLBOUT.CLK_SEL_INT_3", "GLBOUT.GLB3", 1, 1, False, "GLBOUT.GLB3_EN", config=True, delay="del_dummy")
-
-        create_mux("GLBOUT.GLB0", "GLBOUT.FB_INT_3", 2, 0, False, "GLBOUT.FB3", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB1", "GLBOUT.FB_INT_3", 2, 1, False, "GLBOUT.FB3", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB2", "GLBOUT.FB_INT_3", 2, 2, False, "GLBOUT.FB3", config=True, delay="glbout_FEEDBACK_delay")
-        create_mux("GLBOUT.GLB3", "GLBOUT.FB_INT_3", 2, 3, False, "GLBOUT.FB3", config=True, delay="glbout_FEEDBACK_delay")
-
-        create_mux("GLBOUT.FB_INT_3", "GLBOUT.CLK_FB3", 1, 0, False, "GLBOUT.USR_FB3", config=True, delay="del_dummy")
-        create_mux("GLBOUT.USR_FB3", "GLBOUT.CLK_FB3",  1, 1, False, "GLBOUT.USR_FB3", config=True, delay="glbout_U_FB3_CLK_FB3")
-
-        # PLL
-
-        create_mux("CLKIN.CLK_REF_0", "GLBOUT.CLK_REF_OUT0", 1, 0, False, "PLL0.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("CLKIN.CLK_REF_1", "GLBOUT.CLK_REF_OUT1", 1, 0, False, "PLL1.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("CLKIN.CLK_REF_2", "GLBOUT.CLK_REF_OUT2", 1, 0, False, "PLL2.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("CLKIN.CLK_REF_3", "GLBOUT.CLK_REF_OUT3", 1, 0, False, "PLL3.USR_CLK_OUT", config=True, delay="del_dummy")
-
-        create_mux("PLL0.USR_CLK_REF", "GLBOUT.CLK_REF_OUT0", 1, 1, False, "PLL0.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("PLL1.USR_CLK_REF", "GLBOUT.CLK_REF_OUT1", 1, 1, False, "PLL1.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("PLL2.USR_CLK_REF", "GLBOUT.CLK_REF_OUT2", 1, 1, False, "PLL2.USR_CLK_OUT", config=True, delay="del_dummy")
-        create_mux("PLL3.USR_CLK_REF", "GLBOUT.CLK_REF_OUT3", 1, 1, False, "PLL3.USR_CLK_OUT", config=True, delay="del_dummy")
+        for i in range(0,4):
+            create_mux(f"CLKIN.CLK_REF{i}",   f"PLL{i}.CLK_REF",        1, 0, False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK0",        f"GLBOUT.CLK0_{i}",       1, 0, False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK90",       f"GLBOUT.CLK90_{i}",      1, 0, False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK180",      f"GLBOUT.CLK180_{i}",     1, 0, False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK270",      f"GLBOUT.CLK270_{i}",     1, 0, False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK_REF_OUT", f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, delay="del_dummy")
+            create_mux(f"GLBOUT.CLK_FB{i}",   f"PLL{i}.CLK_FEEDBACK",   1, 0, False, delay="del_dummy")
+        
+            create_mux(f"CLKIN.CLK_REF{i}",   f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, f"PLL{i}.USR_CLK_OUT", config=True, delay="del_dummy")
+            create_mux(f"PLL{i}.USR_CLK_REF", f"GLBOUT.CLK_REF_OUT{i}", 1, 1, False, f"PLL{i}.USR_CLK_OUT", config=True, delay="del_dummy")
 
     return muxes
 
@@ -3168,8 +3003,6 @@ class Die:
 
     def create_ram_io_conn(self, prim_name, prim_type, loc_x, loc_y):
         for c in get_pins_constraint(get_tile_type(loc_x,loc_y),prim_name, prim_type):
-            if c.skip:
-                continue
             name = self.get_pin_real_name(prim_name, c.name)
             if c.output == RAM_OUTPUT:
                 self.create_conn(loc_x + c.rel_x, loc_y + c.rel_y, f"CPE.RAM_O{c.pin_num}", loc_x, loc_y, f"{name}")
