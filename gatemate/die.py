@@ -2718,13 +2718,13 @@ def get_mux_connections_for_type(type):
 
     if "PLL" in type:
         for i in range(0,4):
-            create_mux(f"CLKIN.CLK_REF{i}",   f"PLL{i}.CLK_REF",        1, 0, False, delay="del_dummy")
-            create_mux(f"PLL{i}.CLK0",        f"GLBOUT.CLK0_{i}",       1, 0, False, delay="del_dummy")
-            create_mux(f"PLL{i}.CLK90",       f"GLBOUT.CLK90_{i}",      1, 0, False, delay="del_dummy")
-            create_mux(f"PLL{i}.CLK180",      f"GLBOUT.CLK180_{i}",     1, 0, False, delay="del_dummy")
-            create_mux(f"PLL{i}.CLK270",      f"GLBOUT.CLK270_{i}",     1, 0, False, delay="del_dummy")
-            create_mux(f"PLL{i}.CLK_REF_OUT", f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, delay="del_dummy")
-            create_mux(f"GLBOUT.CLK_FB{i}",   f"PLL{i}.CLK_FEEDBACK",   1, 0, False, delay="del_dummy")
+            create_mux(f"CLKIN.CLK_REF{i}",   f"PLL{i}.CLK_REF",        1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK0",        f"GLBOUT.CLK0_{i}",       1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK90",       f"GLBOUT.CLK90_{i}",      1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK180",      f"GLBOUT.CLK180_{i}",     1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK270",      f"GLBOUT.CLK270_{i}",     1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"PLL{i}.CLK_REF_OUT", f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, visible=False, delay="del_dummy")
+            create_mux(f"GLBOUT.CLK_FB{i}",   f"PLL{i}.CLK_FEEDBACK",   1, 0, False, visible=False, delay="del_dummy")
         
             create_mux(f"CLKIN.CLK_REF{i}",   f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, f"PLL{i}.USR_CLK_OUT", config=True, delay="del_dummy")
             create_mux(f"PLL{i}.USR_CLK_REF", f"GLBOUT.CLK_REF_OUT{i}", 1, 1, False, f"PLL{i}.USR_CLK_OUT", config=True, delay="del_dummy")
@@ -2996,7 +2996,7 @@ class Die:
         prim_type = prim_name
         num = 0
         if prim_name.startswith("PLL"):
-            num = int(prim_name[3]) + 4
+            num = int(prim_name[3]) + 2
             prim_type = "PLL"
         prim = Primitive(prim_name, prim_type, num)
         return get_pin_connection_name(prim, Pin(pin,PinType.INPUT,"",False))
