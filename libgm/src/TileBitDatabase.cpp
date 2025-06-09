@@ -732,31 +732,31 @@ RamBitDatabase::RamBitDatabase() : BaseBitDatabase(Die::RAM_BLOCK_SIZE * 8)
 
 void ConfigBitDatabase::add_pll_cfg(int index, char cfg, int start)
 {
-    add_word_settings(stringf("PLL%d.CFG_%c.CI_FILTER_CONST", index, cfg), start + 0, 5);
-    add_word_settings(stringf("PLL%d.CFG_%c.CP_FILTER_CONST", index, cfg), start + 5, 5);
-    add_word_settings(stringf("PLL%d.CFG_%c.N1", index, cfg), start + 10, 6);
-    add_word_settings(stringf("PLL%d.CFG_%c.N2", index, cfg), start + 16, 10);
-    add_word_settings(stringf("PLL%d.CFG_%c.M1", index, cfg), start + 26, 6);
-    add_word_settings(stringf("PLL%d.CFG_%c.M2", index, cfg), start + 32, 10);
-    add_word_settings(stringf("PLL%d.CFG_%c.K", index, cfg), start + 42, 12);
-    add_word_settings(stringf("PLL%d.CFG_%c.FB_PATH", index, cfg), start + 54, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.FINE_TUNE", index, cfg), start + 55, 11);
-    add_word_settings(stringf("PLL%d.CFG_%c.COARSE_TUNE", index, cfg), start + 66, 3);
-    add_word_settings(stringf("PLL%d.CFG_%c.AO_SW", index, cfg), start + 69, 5);
-    add_word_settings(stringf("PLL%d.CFG_%c.OPEN_LOOP", index, cfg), start + 74, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.ENFORCE_LOCK", index, cfg), start + 75, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.PFD_SEL", index, cfg), start + 76, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.LOCK_DETECT_WIN", index, cfg), start + 77, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.SYNC_BYPASS", index, cfg), start + 78, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.FILTER_SHIFT", index, cfg), start + 79, 2);
-    add_word_settings(stringf("PLL%d.CFG_%c.FAST_LOCK", index, cfg), start + 81, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.SAR_LIMIT", index, cfg), start + 82, 3);
-    add_word_settings(stringf("PLL%d.CFG_%c.OP_LOCK", index, cfg), start + 85, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.PDIV1_SEL", index, cfg), start + 86, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.PDIV0_MUX", index, cfg), start + 87, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.EN_COARSE_TUNE", index, cfg), start + 88, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.EN_USR_CFG", index, cfg), start + 89, 1);
-    add_word_settings(stringf("PLL%d.CFG_%c.PLL_EN_SEL", index, cfg), start + 90, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_CI_FILTER_CONST", index, cfg), start + 0, 5);
+    add_word_settings(stringf("PLL%d.CFG_%c_CP_FILTER_CONST", index, cfg), start + 5, 5);
+    add_word_settings(stringf("PLL%d.CFG_%c_N1", index, cfg), start + 10, 6);
+    add_word_settings(stringf("PLL%d.CFG_%c_N2", index, cfg), start + 16, 10);
+    add_word_settings(stringf("PLL%d.CFG_%c_M1", index, cfg), start + 26, 6);
+    add_word_settings(stringf("PLL%d.CFG_%c_M2", index, cfg), start + 32, 10);
+    add_word_settings(stringf("PLL%d.CFG_%c_K", index, cfg), start + 42, 12);
+    add_word_settings(stringf("PLL%d.CFG_%c_FB_PATH", index, cfg), start + 54, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_FINE_TUNE", index, cfg), start + 55, 11);
+    add_word_settings(stringf("PLL%d.CFG_%c_COARSE_TUNE", index, cfg), start + 66, 3);
+    add_word_settings(stringf("PLL%d.CFG_%c_AO_SW", index, cfg), start + 69, 5);
+    add_word_settings(stringf("PLL%d.CFG_%c_OPEN_LOOP", index, cfg), start + 74, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_ENFORCE_LOCK", index, cfg), start + 75, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_PFD_SEL", index, cfg), start + 76, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_LOCK_DETECT_WIN", index, cfg), start + 77, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_SYNC_BYPASS", index, cfg), start + 78, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_FILTER_SHIFT", index, cfg), start + 79, 2);
+    add_word_settings(stringf("PLL%d.CFG_%c_FAST_LOCK", index, cfg), start + 81, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_SAR_LIMIT", index, cfg), start + 82, 3);
+    add_word_settings(stringf("PLL%d.CFG_%c_OP_LOCK", index, cfg), start + 85, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_PDIV1_SEL", index, cfg), start + 86, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_PDIV0_MUX", index, cfg), start + 87, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_EN_COARSE_TUNE", index, cfg), start + 88, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_EN_USR_CFG", index, cfg), start + 89, 1);
+    add_word_settings(stringf("PLL%d.CFG_%c_PLL_EN_SEL", index, cfg), start + 90, 1);
 }
 
 ConfigBitDatabase::ConfigBitDatabase() : BaseBitDatabase(Die::DIE_CONFIG_SIZE * 8)
