@@ -2297,7 +2297,7 @@ def get_pins_constraint(type_name, prim_name, prim_type):
         val.append(PinConstr("CLK90", -PLL_X_POS+40 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
         val.append(PinConstr("CLK180", -PLL_X_POS+41 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
         val.append(PinConstr("CLK270", -PLL_X_POS+42 + pll_num * 4, -PLL_Y_POS+128, RAM_INPUT, 1))
-    elif prim_type=="GLOBOUT":
+    elif prim_type=="GLBOUT":
         val.append(PinConstr("USR_GLB0", -PLL_X_POS+1, -PLL_Y_POS+128, RAM_OUTPUT, 1))
         val.append(PinConstr("USR_GLB1", -PLL_X_POS+1, -PLL_Y_POS+127, RAM_OUTPUT, 1))
         val.append(PinConstr("USR_GLB2", -PLL_X_POS+1, -PLL_Y_POS+126, RAM_OUTPUT, 1))
@@ -2717,13 +2717,31 @@ def get_mux_connections_for_type(type):
             create_mux(f"TES.SIG_SEL{sel}_int", f"TES.MDIE2.P{p}", 1, 1, False, f"TES.SEL_MDIE{p}", delay="del_dummy")
 
     if "PLL" in type:
+        create_mux("PLL1.CLK0",   "GLBOUT.CLK0_1",   1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL2.CLK0",   "GLBOUT.CLK0_2",   1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL3.CLK0",   "GLBOUT.CLK0_3",   1, 0, False, visible=False, delay="del_dummy")
+
+        create_mux("PLL0.CLK90",  "GLBOUT.CLK90_0",  1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL2.CLK90",  "GLBOUT.CLK90_2",  1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL3.CLK90",  "GLBOUT.CLK90_3",  1, 0, False, visible=False, delay="del_dummy")
+
+        create_mux("PLL0.CLK180", "GLBOUT.CLK180_0", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL1.CLK180", "GLBOUT.CLK180_1", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL3.CLK180", "GLBOUT.CLK180_3", 1, 0, False, visible=False, delay="del_dummy")
+
+        create_mux("PLL0.CLK270", "GLBOUT.CLK270_0", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL1.CLK270", "GLBOUT.CLK270_1", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("PLL2.CLK270", "GLBOUT.CLK270_2", 1, 0, False, visible=False, delay="del_dummy")
+
         for i in range(0,4):
             create_mux(f"CLKIN.CLK_REF{i}",   f"PLL{i}.CLK_REF",        1, 0, False, visible=False, delay="del_dummy")
+            
             create_mux(f"PLL{i}.CLK0",        f"GLBOUT.CLK0_{i}",       1, 0, False, visible=False, delay="del_dummy")
             create_mux(f"PLL{i}.CLK90",       f"GLBOUT.CLK90_{i}",      1, 0, False, visible=False, delay="del_dummy")
             create_mux(f"PLL{i}.CLK180",      f"GLBOUT.CLK180_{i}",     1, 0, False, visible=False, delay="del_dummy")
             create_mux(f"PLL{i}.CLK270",      f"GLBOUT.CLK270_{i}",     1, 0, False, visible=False, delay="del_dummy")
             create_mux(f"PLL{i}.CLK_REF_OUT", f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, visible=False, delay="del_dummy")
+
             create_mux(f"GLBOUT.CLK_FB{i}",   f"PLL{i}.CLK_FEEDBACK",   1, 0, False, visible=False, delay="del_dummy")
         
             create_mux(f"CLKIN.CLK_REF{i}",   f"GLBOUT.CLK_REF_OUT{i}", 1, 0, False, f"PLL{i}.USR_CLK_OUT", config=True, delay="del_dummy")
@@ -3080,17 +3098,7 @@ class Die:
         loc = self.gpio_to_loc["GPIO_W2_A[5]"]
         self.create_conn(loc.x, loc.y, "GPIO.IN1", PLL_X_POS, PLL_Y_POS, "CLKIN.CLK3")
 
-        # Next two groups are not directly connected to primitive inputs
-        # so we need to create connections manually
-        self.create_conn(1, 128, "CPE.RAM_O1", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_GLB0")
-        self.create_conn(1, 127, "CPE.RAM_O1", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_GLB1")
-        self.create_conn(1, 126, "CPE.RAM_O1", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_GLB2")
-        self.create_conn(1, 125, "CPE.RAM_O1", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_GLB3")
-
-        self.create_conn(1, 128, "CPE.RAM_O2", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_FB0")
-        self.create_conn(1, 127, "CPE.RAM_O2", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_FB1")
-        self.create_conn(1, 126, "CPE.RAM_O2", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_FB2")
-        self.create_conn(1, 125, "CPE.RAM_O2", PLL_X_POS, PLL_Y_POS, "GLBOUT.USR_FB3")
+        self.create_ram_io_conn("GLBOUT", "GLBOUT", PLL_X_POS, PLL_Y_POS)
 
         self.create_ram_io_conn("PLL0", "PLL", PLL_X_POS, PLL_Y_POS)
         self.create_ram_io_conn("PLL1", "PLL", PLL_X_POS, PLL_Y_POS)
