@@ -294,6 +294,17 @@ PRIMITIVES_PINS = {
         Pin("CLOCK2", PinType.INPUT, "GPIO_WIRE"),
         Pin("CLOCK3", PinType.INPUT, "GPIO_WIRE"),
         Pin("CLOCK4", PinType.INPUT, "GPIO_WIRE"),
+        # PAD wires
+        Pin("I",      PinType.INPUT, "GPIO_WIRE"),
+        Pin("O",      PinType.OUTPUT,"GPIO_WIRE"),
+        Pin("IO",     PinType.INOUT, "GPIO_WIRE"),
+        # LVDS PAD wires
+        Pin("I_P",    PinType.INPUT, "GPIO_WIRE"),
+        Pin("I_N",    PinType.INPUT, "GPIO_WIRE"),
+        Pin("O_P",    PinType.OUTPUT,"GPIO_WIRE"),
+        Pin("O_N",    PinType.OUTPUT,"GPIO_WIRE"),
+        Pin("IO_P",   PinType.INOUT, "GPIO_WIRE"),
+        Pin("IO_N",   PinType.INOUT, "GPIO_WIRE"),
     ],
     "CLKIN" : [
         Pin("CLK0"     , PinType.INPUT, "CLKIN_WIRE"),
