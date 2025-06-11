@@ -658,146 +658,180 @@ bool is_edge_location(int x, int y)
 Bitstream Bitstream::serialise_chip(const Chip &chip)
 {
     BitstreamReadWriter wr;
-    wr.write_cmd_path(0x10);
-    auto &die = chip.get_die(0);
-
-    // PLL setup
-    std::vector<uint8_t> die_config = die.get_die_config();
-    bool pll_written = false;
-    for (int i = 0; i < Die::MAX_PLL; i++) {
-        bool cfg_a = !die.is_pll_cfg_empty(i * 2 + 0);
-        bool cfg_b = !die.is_pll_cfg_empty(i * 2 + 1);
-        int size = Die::PLL_CFG_SIZE;
-        if (!die.is_clkin_cfg_empty())
-            size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE;
-        if (!die.is_glbout_cfg_empty())
-            size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE + Die::GLBOUT_CFG_SIZE;
-        if (cfg_a || cfg_b) {
-            wr.write_cmd_spll(1 << i);
-            wr.write_cmd_pll(i * 2, die_config, size);
-            if (cfg_b) {
-                wr.write_cmd_spll(1 << i | 1 << (i + 4));
-                wr.write_cmd_pll(i * 2 + 1, die_config, size);
+    for(int d=chip.get_max_die()-1;d>=0;d--) {
+        auto &die = chip.get_die(d);
+        if (chip.get_max_die()!=1) {
+            wr.write_cmd_path(0x01); // Need to reset PATH
+            switch(chip.get_max_die()) {
+                case 2: // CCGM1A2
+                    switch(d) {
+                        case 0 : // 1A
+                                 break;
+                        case 1 : // 1B
+                                 wr.write_cmd_path(0x02); // top
+                                 break;
+                    }
+                    break;
+                case 4: // CCGM1A4
+                    switch(d) {
+                        case 0 : // 1A
+                                 break;
+                        case 1 : // 1B
+                                 wr.write_cmd_path(0x02); // top
+                                 break;
+                        case 2 : // 2A
+                                 wr.write_cmd_path(0x04); // _right
+                                 break;
+                        case 3 : // 2B
+                                 wr.write_cmd_path(0x02); // top
+                                 wr.write_cmd_path(0x04); // _right
+                                 break;
+                    }
+                    break;
+                default:
+                    throw BitstreamParseError("Unsupported number of dies.\n");
             }
-            pll_written = true;
         }
-    }
-    if (!pll_written) {
-        int size = Die::PLL_CFG_SIZE;
-        if (!die.is_clkin_cfg_empty())
-            size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE;
-        if (!die.is_glbout_cfg_empty())
-            size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE + Die::GLBOUT_CFG_SIZE;
-        wr.write_cmd_pll(0, die_config, size);
-    }
+        wr.write_cmd_path(0x10);
 
-    // Write RAM configuration
-    bool ram_used = false;
-    for (int y = Die::MAX_RAM_ROWS - 1; y >= 0; y--) {
-        for (int x = Die::MAX_RAM_COLS - 1; x >= 0; x--) {
-            // Empty configuration is skipped
-            if (die.is_ram_empty(x, y))
-                continue;
-            std::vector<uint8_t> data = std::vector<uint8_t>(die.get_ram_config(x, y));
-            wr.write_cmd_rxrys(x, y);
-            wr.write_header(CMD_DLCU, data.size());
-            wr.write_bytes(data);
-            wr.insert_crc16();
-            ram_used = true;
+        // PLL setup
+        std::vector<uint8_t> die_config = die.get_die_config();
+        bool pll_written = false;
+        for (int i = 0; i < Die::MAX_PLL; i++) {
+            bool cfg_a = !die.is_pll_cfg_empty(i * 2 + 0);
+            bool cfg_b = !die.is_pll_cfg_empty(i * 2 + 1);
+            int size = Die::PLL_CFG_SIZE;
+            if (!die.is_clkin_cfg_empty())
+                size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE;
+            if (!die.is_glbout_cfg_empty())
+                size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE + Die::GLBOUT_CFG_SIZE;
+            if (cfg_a || cfg_b) {
+                wr.write_cmd_spll(1 << i);
+                wr.write_cmd_pll(i * 2, die_config, size);
+                if (cfg_b) {
+                    wr.write_cmd_spll(1 << i | 1 << (i + 4));
+                    wr.write_cmd_pll(i * 2 + 1, die_config, size);
+                }
+                pll_written = true;
+            }
         }
-    }
+        if (!pll_written) {
+            int size = Die::PLL_CFG_SIZE;
+            if (!die.is_clkin_cfg_empty())
+                size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE;
+            if (!die.is_glbout_cfg_empty())
+                size = Die::PLL_CFG_SIZE + Die::CLKIN_CFG_SIZE + Die::GLBOUT_CFG_SIZE;
+            wr.write_cmd_pll(0, die_config, size);
+        }
 
-    // Write RAM contents
-    if (ram_used) {
-        wr.write_cmd_chg_status(CFG_FILL_RAM);
+        // Write RAM configuration
+        bool ram_used = false;
         for (int y = Die::MAX_RAM_ROWS - 1; y >= 0; y--) {
             for (int x = Die::MAX_RAM_COLS - 1; x >= 0; x--) {
                 // Empty configuration is skipped
-                if (die.is_ram_data_empty(x, y))
+                if (die.is_ram_empty(x, y))
                     continue;
-                std::vector<uint8_t> data = std::vector<uint8_t>(die.get_ram_data(x, y));
+                std::vector<uint8_t> data = std::vector<uint8_t>(die.get_ram_config(x, y));
                 wr.write_cmd_rxrys(x, y);
-                wr.write_cmd_aclcu(0);
-                wr.write_header(CMD_FRAM, data.size());
+                wr.write_header(CMD_DLCU, data.size());
                 wr.write_bytes(data);
                 wr.insert_crc16();
                 ram_used = true;
             }
         }
-        wr.write_cmd_chg_status(CFG_NONE);
-    }
 
-    // Write latch configuration
-    for (int iteration = 0; iteration < 3; iteration++) {
-        for (int y = 0; y < Die::MAX_ROWS; y++) {
-            for (int x = 0; x < Die::MAX_COLS; x++) {
-                // Empty configuration is skipped
-                if (die.is_latch_empty(x, y))
-                    continue;
-                // Only tiles with CPE can have multiple iterations
-                if (iteration != 0 && is_edge_location(x, y))
-                    continue;
-                // If CPE empty skip other iterations
-                if (iteration != 0 && die.is_cpe_empty(x, y))
-                    continue;
-                std::vector<uint8_t> data = std::vector<uint8_t>(die.get_latch_config(x, y));
-                uint8_t ff_init = data.back();
-                data.pop_back();
-                if (!is_edge_location(x, y)) {
-                    if (iteration == 0) {
-                        // First iteration does not setup CPE at all
-                        std::fill(data.begin(), data.begin() + 40, 0);
-                        // Empty configuration is skipped
-                        if (std::all_of(data.begin(), data.end(), [](uint8_t i) { return i == 0; }))
-                            continue;
-                    }
-                    // 2nd iteration with no changes if no FF initialization
-                    if (iteration == 1 && ff_init) {
-                        // Only CPE data is exported
-                        data.resize(40);
-                        // Set initial FFs states
-                        for (int i = 0; i < 4; i++) {
-                            uint8_t ff = (ff_init >> (i * 2)) & 0x03;
-                            if (ff == Die::FF_INIT_RESET)
-                                data[i * 10 + 8] &= 0x30 ^ 0xff;
-                            else if (ff == Die::FF_INIT_SET)
-                                data[i * 10 + 8] &= 0xc0 ^ 0xff;
+        // Write RAM contents
+        if (ram_used) {
+            wr.write_cmd_chg_status(CFG_FILL_RAM);
+            for (int y = Die::MAX_RAM_ROWS - 1; y >= 0; y--) {
+                for (int x = Die::MAX_RAM_COLS - 1; x >= 0; x--) {
+                    // Empty configuration is skipped
+                    if (die.is_ram_data_empty(x, y))
+                        continue;
+                    std::vector<uint8_t> data = std::vector<uint8_t>(die.get_ram_data(x, y));
+                    wr.write_cmd_rxrys(x, y);
+                    wr.write_cmd_aclcu(0);
+                    wr.write_header(CMD_FRAM, data.size());
+                    wr.write_bytes(data);
+                    wr.insert_crc16();
+                    ram_used = true;
+                }
+            }
+            wr.write_cmd_chg_status(CFG_NONE);
+        }
+
+        // Write latch configuration
+        for (int iteration = 0; iteration < 3; iteration++) {
+            for (int y = 0; y < Die::MAX_ROWS; y++) {
+                for (int x = 0; x < Die::MAX_COLS; x++) {
+                    // Empty configuration is skipped
+                    if (die.is_latch_empty(x, y))
+                        continue;
+                    // Only tiles with CPE can have multiple iterations
+                    if (iteration != 0 && is_edge_location(x, y))
+                        continue;
+                    // If CPE empty skip other iterations
+                    if (iteration != 0 && die.is_cpe_empty(x, y))
+                        continue;
+                    std::vector<uint8_t> data = std::vector<uint8_t>(die.get_latch_config(x, y));
+                    uint8_t ff_init = data.back();
+                    data.pop_back();
+                    if (!is_edge_location(x, y)) {
+                        if (iteration == 0) {
+                            // First iteration does not setup CPE at all
+                            std::fill(data.begin(), data.begin() + 40, 0);
+                            // Empty configuration is skipped
+                            if (std::all_of(data.begin(), data.end(), [](uint8_t i) { return i == 0; }))
+                                continue;
+                        }
+                        // 2nd iteration with no changes if no FF initialization
+                        if (iteration == 1 && ff_init) {
+                            // Only CPE data is exported
+                            data.resize(40);
+                            // Set initial FFs states
+                            for (int i = 0; i < 4; i++) {
+                                uint8_t ff = (ff_init >> (i * 2)) & 0x03;
+                                if (ff == Die::FF_INIT_RESET)
+                                    data[i * 10 + 8] &= 0x30 ^ 0xff;
+                                else if (ff == Die::FF_INIT_SET)
+                                    data[i * 10 + 8] &= 0xc0 ^ 0xff;
+                            }
+                        }
+                        // 3rd iteration only if there was FF initialization
+                        if (iteration == 2) {
+                            if (!ff_init)
+                                continue;
+                            // Only CPE data is exported
+                            data.resize(40);
                         }
                     }
-                    // 3rd iteration only if there was FF initialization
-                    if (iteration == 2) {
-                        if (!ff_init)
-                            continue;
-                        // Only CPE data is exported
-                        data.resize(40);
-                    }
-                }
-                // minimize output
-                auto rit = std::find_if(data.rbegin(), data.rend(), [](uint8_t val) { return val != 0; });
-                data.erase(rit.base(), end(data));
+                    // minimize output
+                    auto rit = std::find_if(data.rbegin(), data.rend(), [](uint8_t val) { return val != 0; });
+                    data.erase(rit.base(), end(data));
 
-                wr.write_cmd_lxlys(x, y);
-                wr.write_header(CMD_DLCU, data.size());
-                wr.write_bytes(data);
-                wr.insert_crc16();
+                    wr.write_cmd_lxlys(x, y);
+                    wr.write_header(CMD_DLCU, data.size());
+                    wr.write_bytes(data);
+                    wr.insert_crc16();
+                }
             }
         }
+
+        //  Write change status
+        if (die.is_using_cfg_gpios())
+            wr.write_cmd_chg_status(CFG_DONE);
+
+        uint8_t cfg_stat = CFG_DONE | CFG_STOP | CFG_CPE_RESET;
+        // cfg_stat |= CFG_RECONFIG | CFG_CPE_CFG;
+        if (!die.is_serdes_cfg_empty()) {
+            cfg_stat |= CFG_SERDES;
+            wr.write_header(CMD_SERDES, die.get_serdes_config().size());
+            wr.write_bytes(die.get_serdes_config());
+            wr.insert_crc16();
+        }
+
+        wr.write_cmd_chg_status(cfg_stat, die_config);
     }
-
-    //  Write change status
-    if (die.is_using_cfg_gpios())
-        wr.write_cmd_chg_status(CFG_DONE);
-
-    uint8_t cfg_stat = CFG_DONE | CFG_STOP | CFG_CPE_RESET;
-    // cfg_stat |= CFG_RECONFIG | CFG_CPE_CFG;
-    if (!die.is_serdes_cfg_empty()) {
-        cfg_stat |= CFG_SERDES;
-        wr.write_header(CMD_SERDES, die.get_serdes_config().size());
-        wr.write_bytes(die.get_serdes_config());
-        wr.insert_crc16();
-    }
-
-    wr.write_cmd_chg_status(cfg_stat, die_config);
     return Bitstream(wr.get());
 }
 

@@ -22,12 +22,27 @@
 
 namespace GateMate {
 
-Chip::Chip(std::string name) : Chip::Chip(1) {}
+Chip::Chip(std::string name) {
+    const std::string prefix = "CCGM1A";
+    if (name.rfind(prefix, 0) == 0) {
+        std::string numberPart = name.substr(prefix.size());
+
+        if (!numberPart.empty() && std::all_of(numberPart.begin(), numberPart.end(), ::isdigit)) {
+            int num = std::stoi(numberPart);
+            *this = Chip(num);
+            return;
+        } else {
+            throw std::invalid_argument("Invalid format after CCGM1A");
+        }
+    }
+    die_num = -1;
+}
 
 Chip::Chip(int num) : die_num(num)
 {
     Die die;
-    dies.push_back(die);
+    for(int i=0;i<num;i++)
+        dies.push_back(die);
 }
 
 int Chip::get_max_die() const { return die_num; }
