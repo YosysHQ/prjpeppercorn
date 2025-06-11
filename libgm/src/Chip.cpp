@@ -22,7 +22,8 @@
 
 namespace GateMate {
 
-Chip::Chip(std::string name) {
+Chip::Chip(std::string name)
+{
     const std::string prefix = "CCGM1A";
     if (name.rfind(prefix, 0) == 0) {
         std::string numberPart = name.substr(prefix.size());
@@ -41,7 +42,7 @@ Chip::Chip(std::string name) {
 Chip::Chip(int num) : die_num(num)
 {
     Die die;
-    for(int i=0;i<num;i++)
+    for (int i = 0; i < num; i++)
         dies.push_back(die);
 }
 

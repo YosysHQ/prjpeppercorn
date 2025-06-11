@@ -658,38 +658,38 @@ bool is_edge_location(int x, int y)
 Bitstream Bitstream::serialise_chip(const Chip &chip)
 {
     BitstreamReadWriter wr;
-    for(int d=chip.get_max_die()-1;d>=0;d--) {
+    for (int d = chip.get_max_die() - 1; d >= 0; d--) {
         auto &die = chip.get_die(d);
-        if (chip.get_max_die()!=1) {
+        if (chip.get_max_die() != 1) {
             wr.write_cmd_path(0x01); // Need to reset PATH
-            switch(chip.get_max_die()) {
-                case 2: // CCGM1A2
-                    switch(d) {
-                        case 0 : // 1A
-                                 break;
-                        case 1 : // 1B
-                                 wr.write_cmd_path(0x02); // top
-                                 break;
-                    }
+            switch (chip.get_max_die()) {
+            case 2: // CCGM1A2
+                switch (d) {
+                case 0: // 1A
                     break;
-                case 4: // CCGM1A4
-                    switch(d) {
-                        case 0 : // 1A
-                                 break;
-                        case 1 : // 1B
-                                 wr.write_cmd_path(0x02); // top
-                                 break;
-                        case 2 : // 2A
-                                 wr.write_cmd_path(0x04); // _right
-                                 break;
-                        case 3 : // 2B
-                                 wr.write_cmd_path(0x02); // top
-                                 wr.write_cmd_path(0x04); // _right
-                                 break;
-                    }
+                case 1:                      // 1B
+                    wr.write_cmd_path(0x02); // top
                     break;
-                default:
-                    throw BitstreamParseError("Unsupported number of dies.\n");
+                }
+                break;
+            case 4: // CCGM1A4
+                switch (d) {
+                case 0: // 1A
+                    break;
+                case 1:                      // 1B
+                    wr.write_cmd_path(0x02); // top
+                    break;
+                case 2:                      // 2A
+                    wr.write_cmd_path(0x04); // _right
+                    break;
+                case 3:                      // 2B
+                    wr.write_cmd_path(0x02); // top
+                    wr.write_cmd_path(0x04); // _right
+                    break;
+                }
+                break;
+            default:
+                throw BitstreamParseError("Unsupported number of dies.\n");
             }
         }
         wr.write_cmd_path(0x10);
