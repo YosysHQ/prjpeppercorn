@@ -397,17 +397,99 @@ Bitstream Bitstream::read(std::istream &in)
     return Bitstream(bytes);
 }
 
+int Bitstream::determine_size(int *max_die_x, int *max_die_y)
+{
+    BitstreamReadWriter rd(data);
+    int die_x = 0;
+    int die_y = 0;
+    while (!rd.is_end()) {
+        rd.crc16.reset_crc16();
+        uint8_t cmd = rd.get_command_opcode();
+        uint16_t length = (cmd == CMD_FRAM) ? rd.get_uint16() : rd.get_byte();
+        std::vector<uint8_t> block;
+        switch (cmd) {
+        case CMD_DLCU:
+        case CMD_FRAM:
+        case CMD_FLASH:
+        case CMD_SERDES:
+        case CMD_PLL:
+        case CMD_CHG_STATUS:
+        case CMD_SLAVE_MODE:
+        case CMD_CFGMODE:
+        case CMD_SPLL:
+        case CMD_LXLYS:
+        case CMD_ACLCU:
+        case CMD_RXRYS:
+            // Check header CRC
+            check_crc(rd);
+            // Read data block
+            rd.get_vector(block, length);
+            // Check data CRC
+            check_crc(rd);
+            // Skip bytes
+            if (cmd == CMD_SLAVE_MODE)
+                rd.skip_bytes(3);
+            if (cmd == CMD_CFGMODE)
+                rd.skip_bytes(3);
+            if (cmd == CMD_PLL)
+                rd.skip_bytes(6);
+            if (cmd == CMD_CHG_STATUS)
+                rd.skip_bytes(9);
+            break;
+        case CMD_PATH:
+            // Check header CRC
+            check_crc(rd);
+            // Read data block
+            switch (rd.get_byte()) {
+            case 0x01: // reset
+                die_x = 0;
+                die_y = 0;
+                break;
+            case 0x02: // top
+                die_y += 1;
+                break;
+            case 0x04: // right
+                die_x += 1;
+                break;
+            case 0x08: // TODO : forward
+                break;
+            case 0x10: // prog
+                *max_die_x = std::max(*max_die_x, die_x);
+                *max_die_y = std::max(*max_die_y, die_y);
+                break;
+            default:
+                break;
+            }
+            // Check data CRC
+            check_crc(rd);
+            // Skip bytes
+            rd.skip_bytes(9);
+            break;
+        default:
+            BITSTREAM_FATAL("Unhandled command 0x" << std::hex << std::setw(2) << std::setfill('0') << int(cmd),
+                            rd.get_offset());
+            break;
+        }
+    }
+    return (*max_die_x + 1) * (*max_die_y + 1);
+}
+
 Chip Bitstream::deserialise_chip()
 {
     std::cerr << "bitstream size: " << data.size() * 8 << " bits" << std::endl;
-    Chip chip(1);
-    Die &die = chip.get_die(0);
+    int max_die_x = 0;
+    int max_die_y = 0;
+    int max_dies = determine_size(&max_die_x, &max_die_y);
+    Chip chip(max_dies);
+    Die *die = &chip.get_die(0);
 
     BitstreamReadWriter rd(data);
     bool is_block_ram = false;
     uint8_t x_pos = 0, y_pos = 0;
     uint8_t pll_select = 0x0f;
     uint16_t aclcu = 0;
+    int die_x = 0;
+    int die_y = 0;
     std::map<std::pair<int, int>, int> tile_iteration;
     while (!rd.is_end()) {
         rd.crc16.reset_crc16();
@@ -435,7 +517,7 @@ Chip Bitstream::deserialise_chip()
             check_crc(rd);
 
             if (is_block_ram)
-                die.write_ram(x_pos, y_pos, block);
+                die->write_ram(x_pos, y_pos, block);
             else {
                 int iteration = -1;
                 if (tile_iteration.count(std::make_pair(x_pos, y_pos)))
@@ -445,7 +527,7 @@ Chip Bitstream::deserialise_chip()
                 // Detection of FF initialization is possible on
                 // last iteration
                 if (iteration == 2) {
-                    std::vector<uint8_t> data = die.get_latch_config(x_pos, y_pos);
+                    std::vector<uint8_t> data = die->get_latch_config(x_pos, y_pos);
                     // Make sure we have CPE data
                     // even if uninitialized
                     block.resize(40, 0x00);
@@ -460,9 +542,9 @@ Chip Bitstream::deserialise_chip()
                             BITSTREAM_FATAL(stringf("Unknown CPE state %d on pos 0x%02x,0x%02x\n", v, x_pos, y_pos),
                                             rd.get_offset());
                     }
-                    die.write_ff_init(x_pos, y_pos, val);
+                    die->write_ff_init(x_pos, y_pos, val);
                 }
-                die.write_latch(x_pos, y_pos, block);
+                die->write_latch(x_pos, y_pos, block);
             }
             break;
         case CMD_PATH:
@@ -472,7 +554,25 @@ Chip Bitstream::deserialise_chip()
             // Check header CRC
             check_crc(rd);
             // Read data block
-            rd.get_byte();
+            switch (rd.get_byte()) {
+            case 0x01: // reset
+                die_x = 0;
+                die_y = 0;
+                break;
+            case 0x02: // top
+                die_y += 1;
+                break;
+            case 0x04: // right
+                die_x += 1;
+                break;
+            case 0x08: // TODO : forward
+                break;
+            case 0x10: // prog
+                die = &chip.get_die(die_x * (max_die_y + 1) + die_y);
+                break;
+            default:
+                break;
+            }
             // Check data CRC
             check_crc(rd);
 
@@ -501,7 +601,7 @@ Chip Bitstream::deserialise_chip()
 
             // Read data block
             rd.get_vector(block, length);
-            die.write_pll_select(pll_select, block);
+            die->write_pll_select(pll_select, block);
             // Check data CRC
             check_crc(rd);
 
@@ -564,7 +664,7 @@ Chip Bitstream::deserialise_chip()
             // Check data CRC
             check_crc(rd);
 
-            die.write_ram_data(x_pos, y_pos, block, aclcu);
+            die->write_ram_data(x_pos, y_pos, block, aclcu);
             break;
         case CMD_CHG_STATUS:
             BITSTREAM_DEBUG("CMD_CHG_STATUS");
@@ -575,7 +675,7 @@ Chip Bitstream::deserialise_chip()
 
             // Read data block
             rd.get_vector(block, length);
-            die.write_status(block);
+            die->write_status(block);
 
             // Check data CRC
             check_crc(rd);
@@ -635,7 +735,7 @@ Chip Bitstream::deserialise_chip()
 
             // Read data block
             rd.get_vector(block, length);
-            die.write_serdes_cfg(block);
+            die->write_serdes_cfg(block);
 
             // Check data CRC
             check_crc(rd);

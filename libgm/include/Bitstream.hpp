@@ -46,6 +46,8 @@ class Bitstream
 
     void write_bit(std::ostream &out);
 
+    int determine_size(int *max_die_x, int *max_die_y);
+
   private:
     Bitstream(const std::vector<uint8_t> &data);
 
