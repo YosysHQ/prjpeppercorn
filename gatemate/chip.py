@@ -173,7 +173,7 @@ CCGM1_DEVICES = {
                         "NA" : [ Bank("1A", "E1"), Bank("1B", "E1") ],
                         "NB" : [ Bank("1A", "E2") ],
                         "WA" : [ Bank("1A", "S3") ],
-                        "WB" : [ Bank("1A", "S1"), Bank("1B", "S1") ],
+                        "WB" : [ Bank("1A", "N1"), Bank("1B", "S1") ],
                         "WC" : [ Bank("1A", "S2") ],
                         "SA" : [ Bank("1A", "W1") ],
                         "SB" : [ Bank("1A", "W2"), Bank("1B", "W2") ]
