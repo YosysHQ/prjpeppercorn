@@ -238,6 +238,8 @@ class TileInfo:
     die : int
     bit_x : int
     bit_y : int
+    tile_x : int
+    tile_y : int
     prim_index : int
 
 PRIMITIVES_PINS = {
@@ -2833,7 +2835,9 @@ def get_tile_info(d,x,y):
         pos = (y - 1) % 2 + 1
     if is_edge_right(x,y):
         pos = (y - 1) % 2 + 1
-    return TileInfo(d, bx, by, pos)
+    tile_x = ((x-1)+16) % 8
+    tile_y = ((y-1)+16) % 8
+    return TileInfo(d, bx, by, tile_x, tile_y, pos)
 
 def alt_plane(dir,plane):
     alt = [[5, 6, 7, 8, 1, 2, 3, 4,11,12, 9,10],
