@@ -225,6 +225,7 @@ class MUX:
 class Location:
     x : int
     y : int
+    z : int
 
 @dataclass(eq=True, order=True)
 class Connection:
@@ -2862,6 +2863,7 @@ class Die:
         self.gpio_to_loc = dict()
         self.conn = dict()
         self.rev_conn = dict()
+        self.ddr_i = dict()
         for y in range(-2, max_row()+1):
             for x in range(-2, max_col()+1):
                 if is_gpio(x,y):
@@ -2872,8 +2874,8 @@ class Die:
                         self.io_pad_names[io.bank][io.port] = dict()
                     if io.num not in self.io_pad_names[io.bank][io.port]:
                         self.io_pad_names[io.bank][io.port][io.num] = dict()
-                    self.gpio_to_loc[f"GPIO_{io.bank}_{io.port}[{io.num}]"]  = Location(x, y)
-                    self.io_pad_names[io.bank][io.port][io.num] = Location(x, y)
+                    self.gpio_to_loc[f"GPIO_{io.bank}_{io.port}[{io.num}]"]  = Location(x, y, 0)
+                    self.io_pad_names[io.bank][io.port][io.num] = Location(x, y, 0)
 
     def create_conn(self, src_x,src_y, src, dst_x, dst_y, dst, delay=""):
         key_val = f"{src_x + self.offset_x}/{src_y + self.offset_y}/{src}"
@@ -3250,6 +3252,7 @@ class Die:
             for num in range(0,9):
                 loc = self.io_pad_names[bank][port][num]
                 self.create_conn(x, y , f"CPE.RAM_O{out}", loc.x, loc.y, "GPIO.DDR")
+        self.ddr_i[bank] = Location(x+self.offset_x,y+self.offset_y,2-out)
 
     def misc_connections(self):
         self.create_ram_io_conn("CFG_CTRL", "CFG_CTRL", CTRL_X_POS, CTRL_Y_POS)
