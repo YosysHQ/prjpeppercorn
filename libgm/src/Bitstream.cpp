@@ -794,6 +794,39 @@ Bitstream Bitstream::serialise_chip(const Chip &chip)
         }
         wr.write_cmd_path(0x10);
 
+        if (chip.get_max_die() != 1) {
+            switch (chip.get_max_die()) {
+            case 2: // CCGM1A2
+                switch (d) {
+                case 0:
+                    wr.write_cmd_d2d(0b0001); // 1A, north
+                    break;
+                case 1:
+                    wr.write_cmd_d2d(0b0100); // 1B, south
+                    break;
+                }
+                break;
+            case 4: // CCGM1A4
+                switch (d) {
+                case 0:
+                    wr.write_cmd_d2d(0b0011); // 1A, north and east
+                    break;
+                case 1:
+                    wr.write_cmd_d2d(0b0110); // 1B, south and east
+                    break;
+                case 2:
+                    wr.write_cmd_d2d(0b1001); // 2A, north and west
+                    break;
+                case 3:
+                    wr.write_cmd_d2d(0b1100); // 2B, south and west
+                    break;
+                }
+                break;
+            default:
+                throw BitstreamParseError("Unsupported number of dies.\n");
+            }
+        }
+
         // PLL setup
         std::vector<uint8_t> die_config = die.get_die_config();
         bool pll_written = false;
