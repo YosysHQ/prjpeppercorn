@@ -420,6 +420,7 @@ int Bitstream::determine_size(int *max_die_x, int *max_die_y)
         case CMD_LXLYS:
         case CMD_ACLCU:
         case CMD_RXRYS:
+        case CMD_D2D:
             // Check header CRC
             check_crc(rd);
             // Read data block
@@ -578,6 +579,17 @@ Chip Bitstream::deserialise_chip()
 
             // Skip bytes
             rd.skip_bytes(9);
+            break;
+        case CMD_D2D:
+            BITSTREAM_DEBUG("CMD_D2D");
+            if (length != 1)
+                BITSTREAM_FATAL("CMD_D2D data must be one byte long", rd.get_offset());
+            // Check header CRC
+            check_crc(rd);
+            // Read data block
+            die->write_d2d_config(rd.get_byte());
+            // Check data CRC
+            check_crc(rd);
             break;
         case CMD_SPLL:
             BITSTREAM_DEBUG("CMD_SPLL");
@@ -793,6 +805,10 @@ Bitstream Bitstream::serialise_chip(const Chip &chip)
             }
         }
         wr.write_cmd_path(0x10);
+
+        uint8_t d2d = die.get_d2d_config();
+        if (d2d)
+            wr.write_cmd_d2d(d2d);
 
         // PLL setup
         std::vector<uint8_t> die_config = die.get_die_config();

@@ -18,7 +18,7 @@
 
 import die
 import os
-from die import Die, Location
+from die import Die, Location, Connection
 from dataclasses import dataclass
 from typing import List, Dict
 from timing import decompress_timing
@@ -105,10 +105,38 @@ class Chip:
         die_num = x_die + y_die * self.die_width
         return die.get_tile_info(die_num, x_pos, y_pos)
 
+    def create_conn(self, conn, src_x,src_y, src, dst_x, dst_y, dst, delay=""):
+        key_val = f"{src_x}/{src_y}/{src}"
+        key  = Connection(src_x, src_y, src, "")
+        item = Connection(dst_x, dst_y, dst, delay)
+        if key_val not in conn:
+            conn[key_val] = list()
+            conn[key_val].append(key)
+        conn[key_val].append(item)
+
     def get_connections(self):
         conn = dict()
         for d in self.dies.values():
             d.create_in_die_connections(conn)
+        if self.name=="CCGM1A2":
+            for x in range(27, 163):
+                if x == 27:
+                    # only 7 signals only from bottom of upper to top of lower
+                    p_range = range(2, 9)
+                else:
+                    p_range = range(1, 9)
+
+                for p in p_range:
+                    plane = f"{p:02d}"
+                    offset_y = 132 + 2
+                    sbb_y = -1 + offset_y if x % 2 == 1 else 0 + offset_y
+                    sbt_y = 129 if x % 2 == 1 else 130
+
+                    self.create_conn(conn, x, sbb_y, f"{die.get_sb_type(x,sbb_y-offset_y)}.P{plane}.Y4", x, sbt_y, f"{die.get_sb_type(x,sbt_y)}.P{plane}.D2_4")
+
+                    if x > 27 and (x != 28 or p > 4):
+                        # no connection for 27, and for 28 just 4 signals from lower to upper
+                        self.create_conn(conn, x, sbt_y, f"{die.get_sb_type(x,sbt_y)}.P{plane}.Y2",  x, sbb_y, f"{die.get_sb_type(x,sbb_y-offset_y)}.P{plane}.D2_2")
         return conn.items()
     
     def get_packages(self):

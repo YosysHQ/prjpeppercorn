@@ -103,6 +103,8 @@ bool Die::is_serdes_cfg_empty() const
 
 bool Die::is_using_cfg_gpios() const { return die_cfg[STATUS_CFG_START + 2] & 0x08; }
 
+uint8_t Die::get_d2d_config() const { return die_cfg[DIE_CONFIG_SIZE - 1]; }
+
 void Die::write_latch(int x, int y, const std::vector<uint8_t> &data)
 {
     int pos = 0;
@@ -164,5 +166,7 @@ void Die::write_pll_select(uint8_t select, const std::vector<uint8_t> &data)
     for (size_t j = PLL_CFG_SIZE; j < data.size(); j++)
         die_cfg[pos++] = data[j];
 }
+
+void Die::write_d2d_config(uint8_t data) { die_cfg[DIE_CONFIG_SIZE - 1] = data; }
 
 } // namespace GateMate

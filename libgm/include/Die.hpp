@@ -44,7 +44,7 @@ class Die
     static constexpr int GLBOUT_CFG_SIZE = 8;
     static constexpr int STATUS_CFG_SIZE = 12;
     static constexpr int STATUS_CFG_START = PLL_CFG_SIZE * MAX_PLL * 2 + CLKIN_CFG_SIZE + GLBOUT_CFG_SIZE;
-    static constexpr int DIE_CONFIG_SIZE = STATUS_CFG_START + STATUS_CFG_SIZE;
+    static constexpr int DIE_CONFIG_SIZE = STATUS_CFG_START + STATUS_CFG_SIZE + 1;
     static constexpr int FF_INIT_RESET = 2;
     static constexpr int FF_INIT_SET = 3;
     static constexpr int SERDES_CFG_SIZE = 186;
@@ -68,11 +68,13 @@ class Die
     bool is_status_cfg_empty() const;
     bool is_using_cfg_gpios() const;
     bool is_serdes_cfg_empty() const;
+    uint8_t get_d2d_config() const;
 
     void write_latch(int x, int y, const std::vector<uint8_t> &data);
     void write_ram(int x, int y, const std::vector<uint8_t> &data);
     void write_ram_data(int x, int y, const std::vector<uint8_t> &data, uint16_t addr);
     void write_pll_select(uint8_t select, const std::vector<uint8_t> &data);
+    void write_d2d_config(uint8_t data);
     void write_die_cfg(const std::vector<uint8_t> &data) { die_cfg = data; }
     void write_serdes_cfg(const std::vector<uint8_t> &data) { serdes_cfg = data; }
     void write_ff_init(int x, int y, uint8_t data);

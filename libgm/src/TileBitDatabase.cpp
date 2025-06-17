@@ -841,6 +841,10 @@ ConfigBitDatabase::ConfigBitDatabase() : BaseBitDatabase(Die::DIE_CONFIG_SIZE * 
         add_word_settings(stringf("PLL%d.USR_CLK_OUT", i), pos + 8 + 7, 1);
         pos += 16;
     }
+    add_word_settings("D2D.N", pos + 0, 1);
+    add_word_settings("D2D.E", pos + 1, 1);
+    add_word_settings("D2D.S", pos + 2, 1);
+    add_word_settings("D2D.W", pos + 3, 1);
     add_unknowns();
 }
 
