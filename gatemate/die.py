@@ -244,43 +244,72 @@ class TileInfo:
     prim_index : int
 
 PRIMITIVES_PINS = {
-    "CPE_HALF_U": [
-        Pin("RAM_I"  ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("EN"     ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("SR"     ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE_B", True),
-        Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE_B", True),
+    "CPE_LT_U": [
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_FF_U": [
+        Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("EN"     ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("SR"     ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("DOUT"   ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_RAMIO_U": [
+        Pin("RAM_I"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("I"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_LT_L": [
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_FF_L": [
+        Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("EN"     ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("SR"     ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("DOUT"   ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_RAMIO_L": [
+        Pin("RAM_I"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("I"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_LT_FULL": [
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN5"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN6"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN7"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN8"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("OUT1"   ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("OUT2"   ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
 
-    "CPE_HALF_L": [
-        Pin("RAM_I"  ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("EN"     ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("SR"     ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE_B", True),
-        Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE_B", True),
-
-        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE_L", True),
-        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE_B", True),
-        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE_B", True),
-        Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE_B", True),
-        Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE_B", True),
-        Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE_B", True),
-        Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE_B", True),
-        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE_T", True),
-        Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE_T", True),
-        Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE_T", True),
-        Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE_T", True),
+    "CPE_LINES": [
+        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
 
     "GPIO" : [
@@ -1337,8 +1366,14 @@ def get_groups_for_type(type):
 def get_primitives_for_type(type):
     primitives = []
     if "CPE" in type:
-        primitives.append(Primitive("CPE_HALF_U","CPE_HALF_U",0))
-        primitives.append(Primitive("CPE_HALF_L","CPE_HALF_L",1))
+        primitives.append(Primitive("CPE_LT_U","CPE_LT_U",0))
+        primitives.append(Primitive("CPE_LT_L","CPE_LT_L",1))
+        primitives.append(Primitive("CPE_FF_U","CPE_FF_U",2))
+        primitives.append(Primitive("CPE_FF_L","CPE_FF_L",3))
+        primitives.append(Primitive("CPE_RAMIO_U","CPE_RAMIO_U",4))
+        primitives.append(Primitive("CPE_RAMIO_L","CPE_RAMIO_L",5))
+        primitives.append(Primitive("CPE_LINES","CPE_LINES",6))
+        primitives.append(Primitive("CPE_LT_FULL","CPE_LT_FULL",7))
     if "RAM" in type:
         primitives.append(Primitive("RAM","RAM",4))
     if "SERDES" in type:
@@ -2324,10 +2359,10 @@ def get_pins_constraint(type_name, prim_name, prim_type):
     return val
 
 def get_pin_connection_name(prim, pin):
-    if prim.type == "CPE_HALF_U":
+    if prim.type == "CPE_LT_U":
         match pin.name:
             case "OUT":
-                return "CPE.OUT2"
+                return "CPE.COMBOUT2_int"
             case "IN1":
                 return "CPE.IN1_int"
             case "IN2":
@@ -2336,16 +2371,32 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.IN3_int"
             case "IN4":
                 return "CPE.IN4_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_FF_U":
+        match pin.name:
+            case "DIN":
+                return "CPE.DIN2_int"
+            case "DOUT":
+                return "CPE.DOUT2_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_RAMIO_U":
+        match pin.name:
+            case "OUT":
+                return "CPE.OUT2"
             case "RAM_O":
                 return "CPE.RAM_O2"
             case "RAM_I":
                 return "CPE.RAM_I2"
+            case "I":
+                return "CPE.OUT2_int"
             case _:
                 return f"CPE.{pin.name}"
-    elif prim.type == "CPE_HALF_L":
+    elif prim.type == "CPE_LT_L":
         match pin.name:
             case "OUT":
-                return "CPE.OUT1"
+                return "CPE.COMBOUT1_int"
             case "IN1":
                 return "CPE.IN5_int"
             case "IN2":
@@ -2354,10 +2405,54 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.IN7_int"
             case "IN4":
                 return "CPE.IN8_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_LT_FULL":
+        match pin.name:
+            case "OUT1":
+                return "CPE.COMBOUT1_int"
+            case "OUT2":
+                return "CPE.COMBOUT2_int"
+            case "IN1":
+                return "CPE.IN1_int"
+            case "IN2":
+                return "CPE.IN2_int"
+            case "IN3":
+                return "CPE.IN3_int"
+            case "IN4":
+                return "CPE.IN4_int"
+            case "IN5":
+                return "CPE.IN5_int"
+            case "IN6":
+                return "CPE.IN6_int"
+            case "IN7":
+                return "CPE.IN7_int"
+            case "IN8":
+                return "CPE.IN8_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_FF_L":
+        match pin.name:
+            case "DIN":
+                return "CPE.DIN1_int"
+            case "DOUT":
+                return "CPE.DOUT1_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_RAMIO_L":
+        match pin.name:
+            case "OUT":
+                return "CPE.OUT1"
             case "RAM_O":
                 return "CPE.RAM_O1"
             case "RAM_I":
                 return "CPE.RAM_I1"
+            case "I":
+                return "CPE.OUT1_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_LINES":
+        match pin.name:
             case _:
                 return f"CPE.{pin.name}"
     return f"{prim.name}.{pin.name}"
@@ -2391,6 +2486,14 @@ def get_endpoints_for_type(type):
         create_wire("CPE.IN6_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN7_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN8_int", type="CPE_WIRE_INT")
+        create_wire("CPE.OUT1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.OUT2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMBOUT1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMBOUT2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.DIN1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.DIN2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.DOUT1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.DOUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.CLK"    , type="CPE_WIRE_L")
         create_wire("CPE.EN"     , type="CPE_WIRE_L")
         create_wire("CPE.SR"     , type="CPE_WIRE_L")
@@ -2574,6 +2677,15 @@ def get_mux_connections_for_type(type):
             if "OM" in type and p>=9:
                 for i in range(4):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}")
+        create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1")
+        create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1")
+
+        create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2")
+        create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2")
+
+        # Virtual connections
+        create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False)
+        create_mux("CPE.OUT2_int",    "CPE.OUT2", 1, 0, False, visible=False)
 
     if "SB_BIG" in type:
         # SB_BIG
