@@ -2679,9 +2679,11 @@ def get_mux_connections_for_type(type):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}")
         create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1")
         create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1")
+        create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int",1, 0, False, visible=False)
 
         create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2")
         create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2")
+        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 0, False, visible=False)
 
         # Virtual connections
         create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False)
