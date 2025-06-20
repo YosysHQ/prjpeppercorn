@@ -2683,7 +2683,7 @@ def get_mux_connections_for_type(type):
 
         create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2")
         create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2")
-        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 0, False, visible=False)
+        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN")
 
         # Virtual connections
         create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False)
