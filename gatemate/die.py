@@ -1375,9 +1375,9 @@ def get_primitives_for_type(type):
         primitives.append(Primitive("CPE_LINES","CPE_LINES",6))
         primitives.append(Primitive("CPE_LT_FULL","CPE_LT_FULL",7))
     if "RAM" in type:
-        primitives.append(Primitive("RAM","RAM",4))
+        primitives.append(Primitive("RAM","RAM",8))
     if "SERDES" in type:
-        primitives.append(Primitive("SERDES","SERDES",4))
+        primitives.append(Primitive("SERDES","SERDES",8))
     if "GPIO" in type:
         primitives.append(Primitive("GPIO","GPIO",0))
     if "PLL" in type:
@@ -1388,8 +1388,8 @@ def get_primitives_for_type(type):
         primitives.append(Primitive("PLL2","PLL",4))
         primitives.append(Primitive("PLL3","PLL",5))
     if "CFG_CTRL" in type:
-        primitives.append(Primitive("CFG_CTRL","CFG_CTRL",2))
-        primitives.append(Primitive("USR_RSTN","USR_RSTN",3))
+        primitives.append(Primitive("CFG_CTRL","CFG_CTRL",8))
+        primitives.append(Primitive("USR_RSTN","USR_RSTN",9))
     return primitives
 
 def get_primitive_pins(bel):
