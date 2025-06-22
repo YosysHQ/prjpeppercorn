@@ -250,6 +250,7 @@ PRIMITIVES_PINS = {
         Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CP_OUT" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_FF_U": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -270,6 +271,10 @@ PRIMITIVES_PINS = {
         Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CP_OUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("MUX_OUT",PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_FF_L": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -2363,6 +2368,8 @@ def get_pin_connection_name(prim, pin):
         match pin.name:
             case "OUT":
                 return "CPE.COMBOUT2_int"
+            case "CP_OUT":
+                return "CPE.CPOUT2_int"
             case "IN1":
                 return "CPE.IN1_int"
             case "IN2":
@@ -2397,6 +2404,10 @@ def get_pin_connection_name(prim, pin):
         match pin.name:
             case "OUT":
                 return "CPE.COMBOUT1_int"
+            case "CP_OUT":
+                return "CPE.CPOUT1_int"
+            case "MUX_OUT":
+                return "CPE.MUXOUT_int"
             case "IN1":
                 return "CPE.IN5_int"
             case "IN2":
@@ -2490,6 +2501,9 @@ def get_endpoints_for_type(type):
         create_wire("CPE.OUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.MUXOUT_int", type="CPE_WIRE_INT")
+        create_wire("CPE.CPOUT1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.CPOUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.DIN1_int", type="CPE_WIRE_INT")
         create_wire("CPE.DIN2_int", type="CPE_WIRE_INT")
         create_wire("CPE.DOUT1_int", type="CPE_WIRE_INT")
@@ -2678,10 +2692,14 @@ def get_mux_connections_for_type(type):
                 for i in range(4):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}")
         create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1")
+        create_mux("CPE.MUXOUT_int",   "CPE.OUT1_int", 2, 1, False, "CPE.C_O1")
+        create_mux("CPE.CPOUT1_int",   "CPE.OUT1_int", 2, 2, False, "CPE.C_O1")
         create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1")
         create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int",1, 0, False, visible=False)
 
         create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2")
+        create_mux("CPE.MUXOUT_int",   "CPE.OUT2_int", 2, 1, False, "CPE.C_O2")
+        create_mux("CPE.CPOUT2_int",   "CPE.OUT2_int", 2, 2, False, "CPE.C_O2")
         create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2")
         create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN")
 
