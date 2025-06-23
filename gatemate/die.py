@@ -250,7 +250,7 @@ PRIMITIVES_PINS = {
         Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("CP_OUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CPOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_FF_U": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -271,8 +271,8 @@ PRIMITIVES_PINS = {
         Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("CP_OUT" ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("MUX_OUT",PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CPOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("MUXOUT",PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
@@ -300,6 +300,11 @@ PRIMITIVES_PINS = {
         Pin("IN8"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT1"   ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("OUT2"   ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CPOUT1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CPOUT2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
 
     "CPE_LINES": [
@@ -2368,7 +2373,7 @@ def get_pin_connection_name(prim, pin):
         match pin.name:
             case "OUT":
                 return "CPE.COMBOUT2_int"
-            case "CP_OUT":
+            case "CPOUT":
                 return "CPE.CPOUT2_int"
             case "IN1":
                 return "CPE.IN1_int"
@@ -2404,9 +2409,9 @@ def get_pin_connection_name(prim, pin):
         match pin.name:
             case "OUT":
                 return "CPE.COMBOUT1_int"
-            case "CP_OUT":
+            case "CPOUT":
                 return "CPE.CPOUT1_int"
-            case "MUX_OUT":
+            case "MUXOUT":
                 return "CPE.MUXOUT_int"
             case "IN1":
                 return "CPE.IN5_int"
@@ -2424,6 +2429,12 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.COMBOUT1_int"
             case "OUT2":
                 return "CPE.COMBOUT2_int"
+            case "CPOUT1":
+                return "CPE.CPOUT1_int"
+            case "CPOUT2":
+                return "CPE.CPOUT2_int"
+            case "MUXOUT":
+                return "CPE.MUXOUT_int"
             case "IN1":
                 return "CPE.IN1_int"
             case "IN2":
@@ -2691,21 +2702,21 @@ def get_mux_connections_for_type(type):
             if "OM" in type and p>=9:
                 for i in range(4):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}")
-        create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1")
-        create_mux("CPE.MUXOUT_int",   "CPE.OUT1_int", 2, 1, False, "CPE.C_O1")
-        create_mux("CPE.CPOUT1_int",   "CPE.OUT1_int", 2, 2, False, "CPE.C_O1")
-        create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1")
-        create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int",1, 0, False, visible=False)
+        create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1", delay="del_dummy")
+        create_mux("CPE.MUXOUT_int",   "CPE.OUT1_int", 2, 1, False, "CPE.C_O1", delay="del_dummy")
+        create_mux("CPE.CPOUT1_int",   "CPE.OUT1_int", 2, 2, False, "CPE.C_O1", delay="del_dummy")
+        create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1", delay="del_dummy")
+        create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int",1, 0, False, visible=False, delay="del_dummy")
 
-        create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2")
-        create_mux("CPE.MUXOUT_int",   "CPE.OUT2_int", 2, 1, False, "CPE.C_O2")
-        create_mux("CPE.CPOUT2_int",   "CPE.OUT2_int", 2, 2, False, "CPE.C_O2")
-        create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2")
-        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN")
+        create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2", delay="del_dummy")
+        create_mux("CPE.MUXOUT_int",   "CPE.OUT2_int", 2, 1, False, "CPE.C_O2", delay="del_dummy")
+        create_mux("CPE.CPOUT2_int",   "CPE.OUT2_int", 2, 2, False, "CPE.C_O2", delay="del_dummy")
+        create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2", delay="del_dummy")
+        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN", delay="del_dummy")
 
         # Virtual connections
-        create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False)
-        create_mux("CPE.OUT2_int",    "CPE.OUT2", 1, 0, False, visible=False)
+        create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("CPE.OUT2_int",    "CPE.OUT2", 1, 0, False, visible=False, delay="del_dummy")
 
     if "SB_BIG" in type:
         # SB_BIG
