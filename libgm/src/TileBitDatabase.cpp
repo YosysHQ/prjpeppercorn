@@ -781,33 +781,33 @@ ConfigBitDatabase::ConfigBitDatabase() : BaseBitDatabase(Die::DIE_CONFIG_SIZE * 
 
     pos += 32;
     // GLBOUT matrix
-    add_word_settings("GLBOUT.GLB0", pos + 0, 3);
-    add_word_settings("GLBOUT.USR_GLB0", pos + 3, 1);
+    add_word_settings("GLBOUT.GLB0_CFG", pos + 0, 3);
+    add_word_settings("GLBOUT.USR_GLB0_EN", pos + 3, 1);
     add_word_settings("GLBOUT.GLB0_EN", pos + 4, 1);
     // bits 5-7 not used
-    add_word_settings("GLBOUT.FB0", pos + 8, 2);
-    add_word_settings("GLBOUT.USR_FB0", pos + 10, 1);
+    add_word_settings("GLBOUT.FB0_CFG", pos + 8, 2);
+    add_word_settings("GLBOUT.USR_FB0_EN", pos + 10, 1);
     // bits 11-15 not used
-    add_word_settings("GLBOUT.GLB1", pos + 16, 3);
-    add_word_settings("GLBOUT.USR_GLB1", pos + 19, 1);
+    add_word_settings("GLBOUT.GLB1_CFG", pos + 16, 3);
+    add_word_settings("GLBOUT.USR_GLB1_EN", pos + 19, 1);
     add_word_settings("GLBOUT.GLB1_EN", pos + 20, 1);
     // bits 21-23 not used
-    add_word_settings("GLBOUT.FB1", pos + 24, 2);
-    add_word_settings("GLBOUT.USR_FB1", pos + 26, 1);
+    add_word_settings("GLBOUT.FB1_CFG", pos + 24, 2);
+    add_word_settings("GLBOUT.USR_FB1_EN", pos + 26, 1);
     // bits 27-31 not used
-    add_word_settings("GLBOUT.GLB2", pos + 32, 3);
-    add_word_settings("GLBOUT.USR_GLB2", pos + 35, 1);
+    add_word_settings("GLBOUT.GLB2_CFG", pos + 32, 3);
+    add_word_settings("GLBOUT.USR_GLB2_EN", pos + 35, 1);
     add_word_settings("GLBOUT.GLB2_EN", pos + 36, 1);
     // bits 37-39 not used
-    add_word_settings("GLBOUT.FB2", pos + 40, 2);
-    add_word_settings("GLBOUT.USR_FB2", pos + 42, 1);
+    add_word_settings("GLBOUT.FB2_CFG", pos + 40, 2);
+    add_word_settings("GLBOUT.USR_FB2_EN", pos + 42, 1);
     // bits 43-47 not used
-    add_word_settings("GLBOUT.GLB3", pos + 48, 3);
-    add_word_settings("GLBOUT.USR_GLB3", pos + 51, 1);
+    add_word_settings("GLBOUT.GLB3_CFG", pos + 48, 3);
+    add_word_settings("GLBOUT.USR_GLB3_EN", pos + 51, 1);
     add_word_settings("GLBOUT.GLB3_EN", pos + 52, 1);
     // bits 53-55 not used
-    add_word_settings("GLBOUT.FB3", pos + 56, 2);
-    add_word_settings("GLBOUT.USR_FB3", pos + 58, 1);
+    add_word_settings("GLBOUT.FB3_CFG", pos + 56, 2);
+    add_word_settings("GLBOUT.USR_FB3_EN", pos + 58, 1);
     // bits 59-63 not used
 
     pos = Die::STATUS_CFG_START * 8;
