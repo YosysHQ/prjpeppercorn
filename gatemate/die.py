@@ -273,8 +273,19 @@ PRIMITIVES_PINS = {
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+        
+        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_FF_L": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -303,11 +314,30 @@ PRIMITIVES_PINS = {
         Pin("CPOUT1" ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT2" ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
-    ],
 
-    "CPE_LINES": [
+        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_COMP": [
+        Pin("COMB1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COMB2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COMPOUT",PinType.OUTPUT, "CPE_WIRE", True),
+    ],
+    "CPE_CPLINES": [
+        Pin("OUT1"   ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("OUT2"   ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("COMPOUT",PinType.OUTPUT, "CPE_WIRE", True),
+
         Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
@@ -1382,12 +1412,13 @@ def get_primitives_for_type(type):
         primitives.append(Primitive("CPE_FF_L","CPE_FF_L",3))
         primitives.append(Primitive("CPE_RAMIO_U","CPE_RAMIO_U",4))
         primitives.append(Primitive("CPE_RAMIO_L","CPE_RAMIO_L",5))
-        primitives.append(Primitive("CPE_LINES","CPE_LINES",6))
-        primitives.append(Primitive("CPE_LT_FULL","CPE_LT_FULL",7))
+        primitives.append(Primitive("CPE_COMP","CPE_COMP",6))
+        primitives.append(Primitive("CPE_CPLINES","CPE_CPLINES",7))
+        primitives.append(Primitive("CPE_LT_FULL","CPE_LT_FULL",8))
     if "RAM" in type:
-        primitives.append(Primitive("RAM","RAM",8))
+        primitives.append(Primitive("RAM","RAM",10))
     if "SERDES" in type:
-        primitives.append(Primitive("SERDES","SERDES",8))
+        primitives.append(Primitive("SERDES","SERDES",10))
     if "GPIO" in type:
         primitives.append(Primitive("GPIO","GPIO",0))
     if "PLL" in type:
@@ -1398,8 +1429,8 @@ def get_primitives_for_type(type):
         primitives.append(Primitive("PLL2","PLL",4))
         primitives.append(Primitive("PLL3","PLL",5))
     if "CFG_CTRL" in type:
-        primitives.append(Primitive("CFG_CTRL","CFG_CTRL",8))
-        primitives.append(Primitive("USR_RSTN","USR_RSTN",9))
+        primitives.append(Primitive("CFG_CTRL","CFG_CTRL",10))
+        primitives.append(Primitive("USR_RSTN","USR_RSTN",11))
     return primitives
 
 def get_primitive_pins(bel):
@@ -2473,8 +2504,24 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.OUT1_int"
             case _:
                 return f"CPE.{pin.name}"
-    elif prim.type == "CPE_LINES":
+    elif prim.type == "CPE_COMP":
         match pin.name:
+            case "COMB1":
+                return "CPE.COMBIN1_int"
+            case "COMB2":
+                return "CPE.COMBIN2_int"
+            case "COMPOUT":
+                return "CPE.COMPOUT_int"
+            case _:
+                return f"CPE.{pin.name}"
+    elif prim.type == "CPE_CPLINES":
+        match pin.name:
+            case "OUT1":
+                return "CPE.OUT1_IN_int"
+            case "OUT2":
+                return "CPE.OUT2_IN_int"
+            case "COMPOUT":
+                return "CPE.COMPOUT_IN_int"
             case _:
                 return f"CPE.{pin.name}"
     return f"{prim.name}.{pin.name}"
@@ -2512,7 +2559,13 @@ def get_endpoints_for_type(type):
         create_wire("CPE.OUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMBIN1_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMBIN2_int", type="CPE_WIRE_INT")
         create_wire("CPE.MUXOUT_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMPOUT_int", type="CPE_WIRE_INT")
+        create_wire("CPE.OUT1_IN_int", type="CPE_WIRE_INT")
+        create_wire("CPE.OUT2_IN_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMPOUT_IN_int", type="CPE_WIRE_INT")
         create_wire("CPE.CPOUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.CPOUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.DIN1_int", type="CPE_WIRE_INT")
@@ -2715,6 +2768,13 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN", delay="del_dummy")
 
         # Virtual connections
+        create_mux("CPE.COMBOUT1_int", "CPE.COMBIN1_int", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("CPE.COMBOUT2_int", "CPE.COMBIN2_int", 1, 0, False, visible=False, delay="del_dummy")
+
+        create_mux("CPE.OUT1_int", "CPE.OUT1_IN_int", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("CPE.OUT2_int", "CPE.OUT2_IN_int", 1, 0, False, visible=False, delay="del_dummy")
+        create_mux("CPE.COMPOUT_int", "CPE.COMPOUT_IN_int", 1, 0, False, visible=False, delay="del_dummy")
+
         create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False, delay="del_dummy")
         create_mux("CPE.OUT2_int",    "CPE.OUT2", 1, 0, False, visible=False, delay="del_dummy")
 
