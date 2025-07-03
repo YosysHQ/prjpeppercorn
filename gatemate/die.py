@@ -272,6 +272,7 @@ PRIMITIVES_PINS = {
         Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COMBIN" ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
@@ -2454,6 +2455,8 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.IN7_int"
             case "IN4":
                 return "CPE.IN8_int"
+            case "COMBIN":
+                return "CPE.COMBIN_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_LT_FULL":
@@ -2570,6 +2573,7 @@ def get_endpoints_for_type(type):
         create_wire("CPE.COMPOUT_IN_int", type="CPE_WIRE_INT")
         create_wire("CPE.CPOUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.CPOUT2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.COMBIN_int", type="CPE_WIRE_INT")
         create_wire("CPE.DIN1_int", type="CPE_WIRE_INT")
         create_wire("CPE.DIN2_int", type="CPE_WIRE_INT")
         create_wire("CPE.DOUT1_int", type="CPE_WIRE_INT")
@@ -2775,6 +2779,9 @@ def get_mux_connections_for_type(type):
 
         create_mux("CPE.OUT1_int",    "CPE.OUT1", 1, 0, False, visible=False, delay="del_dummy")
         create_mux("CPE.OUT2_int",    "CPE.OUT2", 1, 0, False, visible=False, delay="del_dummy")
+
+        # Connecting upper and lower L2T4
+        create_mux("CPE.COMBOUT2_int", "CPE.COMBIN_int", 1, 0, False, visible=False, delay="del_dummy")
 
     if "SB_BIG" in type:
         # SB_BIG
