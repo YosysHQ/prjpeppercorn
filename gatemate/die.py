@@ -251,6 +251,8 @@ PRIMITIVES_PINS = {
         Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
     ],
     "CPE_FF_U": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -2744,10 +2746,6 @@ def get_mux_connections_for_type(type):
         # CPE
         for i in range(1,9):
             create_mux(f"CPE.IN{i}", f"CPE.IN{i}_int", 0, 0, False, None, False)
-        create_mux("CPE.PINY1", "CPE.IN2_int", 1, 1, False, "CPE.C_I1")
-        create_mux("CPE.CINX",  "CPE.IN4_int", 1, 1, False, "CPE.C_I2")
-        create_mux("CPE.PINY1", "CPE.IN6_int", 1, 1, False, "CPE.C_I3")
-        create_mux("CPE.PINX",  "CPE.IN8_int", 1, 1, False, "CPE.C_I4")
         for p in range(1,13):
             plane = f"{p:02d}"
             for i in range(8):
