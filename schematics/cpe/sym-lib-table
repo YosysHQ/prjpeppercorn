@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "peppercorn")(type "KiCad")(uri "${KIPRJMOD}/peppercorn.kicad_sym")(options "")(descr ""))
+)
