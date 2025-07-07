@@ -2761,13 +2761,16 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.MUXOUT_int",   "CPE.OUT1_int", 2, 1, False, "CPE.C_O1", delay="del_dummy")
         create_mux("CPE.CPOUT1_int",   "CPE.OUT1_int", 2, 2, False, "CPE.C_O1", delay="del_dummy")
         create_mux("CPE.COMBOUT1_int", "CPE.OUT1_int", 2, 3, False, "CPE.C_O1", delay="del_dummy")
-        create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int",1, 0, False, visible=False, delay="del_dummy")
+        create_mux("CPE.COMBOUT1_int", "CPE.DIN1_int", 1, 0, False, visible=False, delay="del_dummy")
 
         create_mux("CPE.DOUT2_int",    "CPE.OUT2_int", 2, 0, False, "CPE.C_O2", delay="del_dummy")
         create_mux("CPE.MUXOUT_int",   "CPE.OUT2_int", 2, 1, False, "CPE.C_O2", delay="del_dummy")
         create_mux("CPE.CPOUT2_int",   "CPE.OUT2_int", 2, 2, False, "CPE.C_O2", delay="del_dummy")
         create_mux("CPE.COMBOUT2_int", "CPE.OUT2_int", 2, 3, False, "CPE.C_O2", delay="del_dummy")
-        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int",1, 1, False, "CPE.C_2D_IN", delay="del_dummy")
+        
+        create_mux("CPE.MUXOUT_int",   "CPE.DIN2_int", 1, 1, False, "CPE.C_BR",    delay="del_dummy")
+        create_mux("CPE.COMBOUT1_int", "CPE.DIN2_int", 1, 0, False, "CPE.C_2D_IN", delay="del_dummy")
+        create_mux("CPE.COMBOUT2_int", "CPE.DIN2_int", 1, 1, False, "CPE.C_2D_IN", delay="del_dummy")
 
         # Virtual connections
         create_mux("CPE.COMBOUT1_int", "CPE.COMBIN1_int", 1, 0, False, visible=False, delay="del_dummy")
