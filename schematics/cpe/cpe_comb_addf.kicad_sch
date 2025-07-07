@@ -3,7 +3,10 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "55858e3d-6709-4cfc-9891-60cca07c7250")
-	(paper "A4")
+	(paper "A3")
+	(title_block
+		(company "YosysHQ")
+	)
 	(lib_symbols
 		(symbol "XOR_1"
 			(exclude_from_sim no)

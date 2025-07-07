@@ -3,7 +3,10 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "e1db954c-a408-4581-b001-cd836bef6bdd")
-	(paper "A4")
+	(paper "A3")
+	(title_block
+		(company "YosysHQ")
+	)
 	(lib_symbols
 		(symbol "peppercorn:LUT2"
 			(exclude_from_sim no)

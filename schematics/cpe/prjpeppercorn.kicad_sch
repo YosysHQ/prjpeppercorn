@@ -3,7 +3,10 @@
 	(generator "eeschema")
 	(generator_version "9.0")
 	(uuid "5a7723f7-3f6f-437e-b958-e402b06d3f54")
-	(paper "A4")
+	(paper "A3")
+	(title_block
+		(company "YosysHQ")
+	)
 	(lib_symbols)
 	(sheet
 		(at 31.75 26.035)
