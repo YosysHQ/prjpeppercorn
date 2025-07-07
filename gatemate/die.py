@@ -275,7 +275,6 @@ PRIMITIVES_PINS = {
         Pin("COMBIN" ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
         
         Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
@@ -330,6 +329,10 @@ PRIMITIVES_PINS = {
         Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        # For MX8
+        Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("EN"     ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("SR"     ,PinType.INPUT,  "CPE_WIRE", True),
     ],
     "CPE_COMP": [
         Pin("COMB1"  ,PinType.INPUT,  "CPE_WIRE", True),
@@ -2445,8 +2448,6 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.COMBOUT1_int"
             case "CPOUT":
                 return "CPE.CPOUT1_int"
-            case "MUXOUT":
-                return "CPE.MUXOUT_int"
             case "IN1":
                 return "CPE.IN5_int"
             case "IN2":
