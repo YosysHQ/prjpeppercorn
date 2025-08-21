@@ -302,6 +302,17 @@ PRIMITIVES_PINS = {
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
+    "CPE_BRIDGE": [
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN5"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN6"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN7"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN8"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("MUXOUT" ,PinType.OUTPUT, "CPE_WIRE", True),
+    ],
     "CPE_LT_FULL": [
         Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -1430,6 +1441,7 @@ def get_primitives_for_type(type):
         primitives.append(Primitive("CPE_COMP","CPE_COMP",6))
         primitives.append(Primitive("CPE_CPLINES","CPE_CPLINES",7))
         primitives.append(Primitive("CPE_LT_FULL","CPE_LT_FULL",8))
+        primitives.append(Primitive("CPE_BRIDGE","CPE_BRIDGE",9))
     if "RAM" in type:
         primitives.append(Primitive("RAM","RAM",10))
     if "SERDES" in type:
@@ -2500,6 +2512,28 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.IN8_int"
             case _:
                 return f"CPE.{pin.name}"
+    elif prim.type == "CPE_BRIDGE":
+        match pin.name:
+            case "MUXOUT":
+                return "CPE.MUXOUT_int"
+            case "IN1":
+                return "CPE.IN1_int"
+            case "IN2":
+                return "CPE.IN2_int"
+            case "IN3":
+                return "CPE.IN3_int"
+            case "IN4":
+                return "CPE.IN4_int"
+            case "IN5":
+                return "CPE.IN5_int"
+            case "IN6":
+                return "CPE.IN6_int"
+            case "IN7":
+                return "CPE.IN7_int"
+            case "IN8":
+                return "CPE.IN8_int"
+            case _:
+                return f"CPE.{pin.name}"
     elif prim.type == "CPE_FF_L":
         match pin.name:
             case "DIN":
@@ -2768,6 +2802,10 @@ def get_mux_connections_for_type(type):
             if "OM" in type and p>=9:
                 for i in range(4):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}")
+
+        for i in range(1,9):
+            create_mux(f"CPE.IN{i}_int", "CPE.MUXOUT_int", 3, i-1, False, "CPE.C_SN")
+
         create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1", delay="del_dummy")
         create_mux("CPE.MUXOUT_int",   "CPE.OUT1_int", 2, 1, False, "CPE.C_O1", delay="del_dummy")
         create_mux("CPE.CPOUT1_int",   "CPE.OUT1_int", 2, 2, False, "CPE.C_O1", delay="del_dummy")
