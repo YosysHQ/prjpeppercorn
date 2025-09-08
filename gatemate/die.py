@@ -3361,7 +3361,17 @@ def get_mux_connections_for_type(type):
     if "CPE" in type:
         # CPE
         for i in range(1,9):
-            create_mux(f"CPE.IN{i}", f"CPE.IN{i}_int", 0, 0, False, None, False)
+            create_mux(f"CPE.IN{i}", f"CPE.IN{i}_int", 3, i-1, False, None, False)
+
+        # lut permutation
+        create_mux("CPE.IN1", "CPE.IN2_int", 3, (1-1), False, None, False)
+        create_mux("CPE.IN2", "CPE.IN1_int", 3, (2-1), False, None, False)
+        create_mux("CPE.IN3", "CPE.IN4_int", 3, (3-1), False, None, False)
+        create_mux("CPE.IN4", "CPE.IN3_int", 3, (4-1), False, None, False)
+        create_mux("CPE.IN5", "CPE.IN6_int", 3, (5-1), False, None, False)
+        create_mux("CPE.IN6", "CPE.IN5_int", 3, (6-1), False, None, False)
+        create_mux("CPE.IN7", "CPE.IN8_int", 3, (7-1), False, None, False)
+        create_mux("CPE.IN8", "CPE.IN7_int", 3, (8-1), False, None, False)
         for p in range(1,13):
             plane = f"{p:02d}"
             for i in range(8):
