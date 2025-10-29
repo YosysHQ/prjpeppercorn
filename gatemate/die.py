@@ -3390,7 +3390,7 @@ def get_mux_connections_for_type(type):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}", delay = f"om_x1_y1_p{p}_d{i}")
 
         for i in range(1,9):
-            create_mux(f"CPE.IN{i}_int", "CPE.MUXOUT_int", 3, i-1, False, "CPE.C_SN", delay=f"_MX8_IN{i}_OUT1")
+            create_mux(f"CPE.IN{i}_int", "CPE.MUXOUT_int", 3, i-1, False, "CPE.C_SN", False, delay=f"_MX8_IN{i}_OUT1")
 
         create_direct("IM.P01.Y","CPE.IN1")
         create_direct("IM.P02.Y","CPE.IN2")
