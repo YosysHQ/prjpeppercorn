@@ -3370,7 +3370,17 @@ def get_mux_connections_for_type(type):
     if "CPE" in type:
         # CPE
         for i in range(1,9):
-            create_direct(f"CPE.IN{i}", f"CPE.IN{i}_int", delay="del_dummy")
+            create_mux(f"CPE.IN{i}", f"CPE.IN{i}_int", 1, 0, False, f"CPE.PERM{(i-1)//2}", False, delay="del_dummy")
+
+        # lut permutation
+        create_mux("CPE.IN1", "CPE.IN2_int", 1, 1, False, "CPE.PERM0", False, delay="del_dummy")
+        create_mux("CPE.IN2", "CPE.IN1_int", 1, 1, False, "CPE.PERM0", False, delay="del_dummy")
+        create_mux("CPE.IN3", "CPE.IN4_int", 1, 1, False, "CPE.PERM1", False, delay="del_dummy")
+        create_mux("CPE.IN4", "CPE.IN3_int", 1, 1, False, "CPE.PERM1", False, delay="del_dummy")
+        create_mux("CPE.IN5", "CPE.IN6_int", 1, 1, False, "CPE.PERM2", False, delay="del_dummy")
+        create_mux("CPE.IN6", "CPE.IN5_int", 1, 1, False, "CPE.PERM2", False, delay="del_dummy")
+        create_mux("CPE.IN7", "CPE.IN8_int", 1, 1, False, "CPE.PERM3", False, delay="del_dummy")
+        create_mux("CPE.IN8", "CPE.IN7_int", 1, 1, False, "CPE.PERM3", False, delay="del_dummy")
         for p in range(1,13):
             plane = f"{p:02d}"
             for i in range(8):
