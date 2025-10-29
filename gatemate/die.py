@@ -3398,9 +3398,9 @@ def get_mux_connections_for_type(type):
             plane = f"{p:02d}"
             # D6 and D7 are from alternate planes
             alt = f"{alt_plane(0,p):02d}"
-            create_direct(f"IM.P{alt}.Y", f"IM.P{plane}.D6")
+            create_direct(f"IM.P{alt}.Y", f"IM.P{plane}.D6", f"im_x1_y1_p{p}_d6_path1")
             alt = f"{alt_plane(1,p):02d}"
-            create_direct(f"IM.P{alt}.Y", f"IM.P{plane}.D7")
+            create_direct(f"IM.P{alt}.Y", f"IM.P{plane}.D7", f"im_x1_y1_p{p}_d7_path1")
 
 
         create_mux("CPE.DOUT1_int",    "CPE.OUT1_int", 2, 0, False, "CPE.C_O1", delay="del_dummy")
@@ -3804,9 +3804,9 @@ class Die:
 
             # D4 and D5 are from diagonal INMUX
             if is_cpe(x-1,y-1):
-                self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4")
+                self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4", f"im_x1_y1_p{p}_d4_path1")
             if is_cpe(x+1,y+1):
-                self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5")
+                self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5", f"im_x1_y1_p{p}_d5_path1")
 
     def create_sb(self, x,y):
         x_0,y_0 = base_loc(x,y)
