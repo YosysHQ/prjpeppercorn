@@ -17,6 +17,7 @@
 #
 
 import re
+import sys
 from enum import Enum
 from dataclasses import dataclass
 
@@ -70,6 +71,9 @@ def is_cpe(x,y):
 
 def is_outmux(x,y):
     return is_cpe(x,y) and (x+1) % 2 == (y+1) % 2
+
+def is_x0y0(x,y):
+    return is_cpe(x,y) and ((x-1) % 2 == 0) and ((y-1) % 2 == 0)
 
 def is_edge_left(x,y):
     return x==-2 and y>=1 and y<=128
@@ -3739,6 +3743,8 @@ class Die:
         self.conn = dict()
         self.rev_conn = dict()
         self.ddr_i = dict()
+        self.used_ramio = dict()
+        self.created_ramio = dict()
         for y in range(-2, max_row()+1):
             for x in range(-2, max_col()+1):
                 if is_gpio(x,y):
@@ -3761,11 +3767,19 @@ class Die:
             self.conn[key_val].append(key)
         self.conn[key_val].append(item)
         if "CPE.RAM_I" in dst:
+            key_val = f"{dst_x + self.offset_x}/{dst_y + self.offset_y}"
+            if key_val not in self.used_ramio:
+                self.used_ramio[key_val] = 1
             rev_key_val = f"{dst_x + self.offset_x}/{dst_y + self.offset_y}/{dst}"
+
             if rev_key_val not in self.rev_conn:
                 self.rev_conn[rev_key_val] = list()
                 self.rev_conn[rev_key_val].append(item)
             self.rev_conn[rev_key_val].append(key)
+        if "CPE.RAM_O" in src:
+            key_val = f"{src_x + self.offset_x}/{src_y + self.offset_y}"
+            if key_val not in self.used_ramio:
+                self.used_ramio[key_val] = 1
         if self.debug_conn:
             print(f"({src_x + self.offset_x},{src_y}) {src} => ({dst_x + self.offset_x},{dst_y + self.offset_y}) {dst}")
 
@@ -3807,6 +3821,109 @@ class Die:
                 self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4", f"im_x1_y1_p{p}_d4_path1")
             if is_cpe(x+1,y+1):
                 self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5", f"im_x1_y1_p{p}_d5_path1")
+
+
+
+    def create_ramio_both(self, x1, y1, out_name, x2, y2, in_name, show=False):
+        #key_val1 = f"{x1 + self.offset_x}/{y1 + self.offset_y}"
+        #key_val2 = f"{x2 + self.offset_x}/{y2 + self.offset_y}"
+#
+        #if key_val1 in self.used_ramio:
+        #    return
+        #if key_val2 in self.used_ramio:
+        #    return
+#
+        #self.used_ramio[key_val1] = 1
+        #self.used_ramio[key_val2] = 1
+
+        key = f"{x1},{y1} {out_name} -> {x2},{y2} {in_name}"
+        if key not in self.created_ramio:
+            self.create_conn(x1,y1,out_name, x2,y2,in_name, delay="del_special_RAM_I") # del_RAM_O__RAM_I
+            if show:
+                print(f"{x1},{y1} {out_name} -> {x2},{y2} {in_name}")
+            self.created_ramio[key] = 1
+
+        key = f"{x2},{y2} {out_name} -> {x1},{y1} {in_name}"
+        if key not in self.created_ramio:
+            self.create_conn(x2,y2,out_name, x1,y1,in_name, delay="del_special_RAM_I") # del_RAM_O__RAM_I
+            if show:
+                print(f"{x2},{y2} {out_name} -> {x1},{y1} {in_name}")
+            self.created_ramio[key] = 1
+
+    def create_ramio(self, x0, y0):
+        if is_cpe(x0,y0-1):
+            self.create_ramio_both(x0,y0,"CPE.RAM_O1", x0,y0-1,"CPE.RAM_I1")
+        else:
+            # bottom edge
+            if is_cpe(x0-1,y0):
+                self.create_ramio_both(x0,y0,"CPE.RAM_O1", x0-1,y0,"CPE.RAM_I1", True)
+            else:
+                print(f"ERROR 0 {x0},{y0} CPE.RAM_O1 -> {x0-1},{y0} CPE.RAM_I1")
+
+        if is_cpe(x0+1,y0-1):
+            self.create_ramio_both(x0+1,y0,"CPE.RAM_O1", x0+1,y0-1,"CPE.RAM_I1")
+        else:
+            # bottom edge
+            if is_cpe(x0+2,y0):
+                self.create_ramio_both(x0+1,y0,"CPE.RAM_O1", x0+2,y0,"CPE.RAM_I1", True)
+            else:
+                print(f"ERROR 1 {x0+1},{y0} CPE.RAM_O1 -> {x0+2},{y0} CPE.RAM_I1")
+            
+        if is_cpe(x0,y0+2):
+            self.create_ramio_both(x0,y0+1,"CPE.RAM_O1", x0,y0+2,"CPE.RAM_I1")
+        else:
+            # top edge
+            if is_cpe(x0-1,y0):
+                self.create_ramio_both(x0,y0,"CPE.RAM_O1", x0-1,y0,"CPE.RAM_I1")
+            else:
+                print(f"ERROR 2 {x0},{y0} CPE.RAM_O1 -> {x0-1},{y0} CPE.RAM_I1")
+
+        if is_cpe(x0+1,y0+2):
+            self.create_ramio_both(x0+1,y0+1,"CPE.RAM_O1", x0+1,y0+2,"CPE.RAM_I1")
+        else:
+            # top edge
+            if is_cpe(x0+2,y0):
+                self.create_ramio_both(x0+1,y0,"CPE.RAM_O1", x0+2,y0,"CPE.RAM_I1")
+            else:
+                print(f"ERROR 3 {x0+1},{y0} CPE.RAM_O1 -> {x0+2},{y0} CPE.RAM_I1")
+
+
+        if is_cpe(x0-1,y0):
+            self.create_ramio_both(x0,y0,"CPE.RAM_O2", x0-1,y0,"CPE.RAM_I2")
+        else:
+            # left edge
+            if is_cpe(x0,y0-1):
+                self.create_ramio_both(x0,y0,"CPE.RAM_O2", x0,y0-1,"CPE.RAM_I2")
+            else:
+                print(f"ERROR 4 {x0},{y0} CPE.RAM_O2 -> {x0},{y0-1} CPE.RAM_I2")
+
+        if is_cpe(x0+2,y0):
+            self.create_ramio_both(x0+1,y0,"CPE.RAM_O2", x0+2,y0,"CPE.RAM_I2")
+        else:
+            # right edge
+            if is_cpe(x0+1,y0-1):
+                self.create_ramio_both(x0+1,y0,"CPE.RAM_O2", x0+1,y0-1,"CPE.RAM_I2")
+            else:
+                print(f"ERROR 5 {x0+1},{y0} CPE.RAM_O2 -> {x0+1},{y0-1} CPE.RAM_I2")
+            
+        if is_cpe(x0-1,y0+1):
+            self.create_ramio_both(x0,y0+1,"CPE.RAM_O2", x0-1,y0+1,"CPE.RAM_I2")
+        else:
+            # left edge
+            if is_cpe(x0,y0+2):
+                self.create_ramio_both(x0,y0+1,"CPE.RAM_O2", x0,y0+2,"CPE.RAM_I2")
+            else:
+                print(f"ERROR 6 {x0},{y0+1} CPE.RAM_O2 -> {x0},{y0+2} CPE.RAM_I2")
+
+        if is_cpe(x0+2,y0+1):
+            self.create_ramio_both(x0+1,y0+1,"CPE.RAM_O2", x0+2,y0+1,"CPE.RAM_I2")
+        else:
+            # right edge
+            if is_cpe(x0+1,y0+2):
+                self.create_ramio_both(x0+1,y0+1,"CPE.RAM_O2", x0+1,y0+2,"CPE.RAM_I2")
+            else:
+                print(f"ERROR 7 {x0+1},{y0+1} CPE.RAM_O2 -> {x0+1},{y0+2} CPE.RAM_I2")
+
 
     def create_sb(self, x,y):
         x_0,y_0 = base_loc(x,y)
@@ -4152,3 +4269,21 @@ class Die:
         self.global_mesh()
         self.edge_select()
         self.misc_connections()
+        for y in range(-2, max_row()+1):
+            for x in range(-2, max_col()+1):
+                if is_cpe(x,y):
+                    if is_x0y0(x,y):
+                        self.create_ramio(x,y)
+        
+        # special routes
+        self.create_ramio_both(1,2,"CPE.RAM_O2", 1,1, "CPE.RAM_I2", True)
+        self.create_ramio_both(1,121,"CPE.RAM_O2", 1,120, "CPE.RAM_I2", True)
+
+        self.create_ramio_both(160,2,"CPE.RAM_O2", 160,1, "CPE.RAM_I2", True)
+        self.create_ramio_both(160,128,"CPE.RAM_O2", 160,127, "CPE.RAM_I2")
+
+        self.create_ramio_both(2,1,"CPE.RAM_O1", 1,1, "CPE.RAM_I1", True)
+        self.create_ramio_both(159,1,"CPE.RAM_O1", 160,1, "CPE.RAM_I1", True)
+ 
+        self.create_ramio_both(2,128,"CPE.RAM_O1", 1,128, "CPE.RAM_I1")
+        self.create_ramio_both(159,128,"CPE.RAM_O1", 160,128, "CPE.RAM_I1")
