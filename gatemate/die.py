@@ -3856,7 +3856,7 @@ class Die:
         else:
             # bottom edge
             if is_cpe(x0-1,y0):
-                self.create_ramio_both(x0,y0,"CPE.RAM_O1", x0-1,y0,"CPE.RAM_I1", True)
+                self.create_ramio_both(x0,y0,"CPE.RAM_O1", x0-1,y0,"CPE.RAM_I1")
             else:
                 print(f"ERROR 0 {x0},{y0} CPE.RAM_O1 -> {x0-1},{y0} CPE.RAM_I1")
 
@@ -3865,7 +3865,7 @@ class Die:
         else:
             # bottom edge
             if is_cpe(x0+2,y0):
-                self.create_ramio_both(x0+1,y0,"CPE.RAM_O1", x0+2,y0,"CPE.RAM_I1", True)
+                self.create_ramio_both(x0+1,y0,"CPE.RAM_O1", x0+2,y0,"CPE.RAM_I1")
             else:
                 print(f"ERROR 1 {x0+1},{y0} CPE.RAM_O1 -> {x0+2},{y0} CPE.RAM_I1")
             
@@ -3892,7 +3892,7 @@ class Die:
             self.create_ramio_both(x0,y0,"CPE.RAM_O2", x0-1,y0,"CPE.RAM_I2")
         else:
             # left edge
-            if is_cpe(x0,y0-1):
+            if is_cpe(x0,y0-1) and y0<119:
                 self.create_ramio_both(x0,y0,"CPE.RAM_O2", x0,y0-1,"CPE.RAM_I2")
             else:
                 print(f"ERROR 4 {x0},{y0} CPE.RAM_O2 -> {x0},{y0-1} CPE.RAM_I2")
@@ -3910,7 +3910,7 @@ class Die:
             self.create_ramio_both(x0,y0+1,"CPE.RAM_O2", x0-1,y0+1,"CPE.RAM_I2")
         else:
             # left edge
-            if is_cpe(x0,y0+2):
+            if is_cpe(x0,y0+2) and y0<119:
                 self.create_ramio_both(x0,y0+1,"CPE.RAM_O2", x0,y0+2,"CPE.RAM_I2")
             else:
                 print(f"ERROR 6 {x0},{y0+1} CPE.RAM_O2 -> {x0},{y0+2} CPE.RAM_I2")
