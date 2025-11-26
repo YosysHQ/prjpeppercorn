@@ -513,14 +513,25 @@ RAM_HALF_PINS =  [
 
 PRIMITIVES_PINS = {
     "CPE_LT_U": [
-        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
+        # LUT2 first level
+        Pin("D0_00"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_00"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        # LUT2 2nd level
+        Pin("D0_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+
+        # MX4 inputs
+        Pin("M1"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M2"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M3"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M4"      ,PinType.INPUT,  "CPE_WIRE", True),
+
+        Pin("OUT"     ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
     ],
     "CPE_FF_U": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -536,26 +547,40 @@ PRIMITIVES_PINS = {
         Pin("RAM_O"  ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_LT_L": [
-        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("COMBIN" ,PinType.INPUT,  "CPE_WIRE", True),
+        # LUT2 first level
+        Pin("D0_00"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_00"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        # LUT2 2nd level
+        Pin("D0_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+
+        # LUT2 3rd level input
+        Pin("COMBIN"  ,PinType.INPUT,  "CPE_WIRE", True),
+
+        # MX4 inputs
+        Pin("M1"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M2"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M3"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("M4"      ,PinType.INPUT,  "CPE_WIRE", True),
+
+        # outputs
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
         
-        Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
-        Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("PINX"   ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("CINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("CINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("PINY2"  ,PinType.INPUT,  "CPE_WIRE", True),
+        #Pin("COUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("POUTX"  ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("COUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("POUTY1" ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("COUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
+        #Pin("POUTY2" ,PinType.OUTPUT, "CPE_WIRE", True),
     ],
     "CPE_FF_L": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
@@ -2960,14 +2985,26 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.COMBOUT2_int"
             case "CPOUT":
                 return "CPE.CPOUT2_int"
-            case "IN1":
-                return "CPE.IN1_int"
-            case "IN2":
-                return "CPE.IN2_int"
-            case "IN3":
-                return "CPE.IN3_int"
-            case "IN4":
-                return "CPE.IN4_int"
+            case "D0_00":
+                return "CPE.D0_00_int"
+            case "D1_00":
+                return "CPE.D1_00_int"
+            case "D0_01":
+                return "CPE.D0_01_int"
+            case "D1_01":
+                return "CPE.D1_01_int"
+            case "D0_10":
+                return "CPE.D0_10_int"
+            case "D1_10":
+                return "CPE.D1_10_int"
+            case "M1":
+                return "CPE.IN1"
+            case "M2":
+                return "CPE.IN2"
+            case "M3":
+                return "CPE.IN3"
+            case "M4":
+                return "CPE.IN4"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_FF_U":
@@ -2996,14 +3033,26 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.COMBOUT1_int"
             case "CPOUT":
                 return "CPE.CPOUT1_int"
-            case "IN1":
-                return "CPE.IN5_int"
-            case "IN2":
-                return "CPE.IN6_int"
-            case "IN3":
-                return "CPE.IN7_int"
-            case "IN4":
-                return "CPE.IN8_int"
+            case "D0_00":
+                return "CPE.D0_02_int"
+            case "D1_00":
+                return "CPE.D1_02_int"
+            case "D0_01":
+                return "CPE.D0_03_int"
+            case "D1_01":
+                return "CPE.D1_03_int"
+            case "D0_10":
+                return "CPE.D0_11_int"
+            case "D1_10":
+                return "CPE.D1_11_int"
+            case "M1":
+                return "CPE.IN5"
+            case "M2":
+                return "CPE.IN6"
+            case "M3":
+                return "CPE.IN7"
+            case "M4":
+                return "CPE.IN8"
             case "COMBIN":
                 return "CPE.COMBIN_int"
             case _:
@@ -3021,21 +3070,21 @@ def get_pin_connection_name(prim, pin):
             case "MUXOUT":
                 return "CPE.MUXOUT_int"
             case "IN1":
-                return "CPE.IN1_int"
+                return "CPE.IN1"
             case "IN2":
-                return "CPE.IN2_int"
+                return "CPE.IN2"
             case "IN3":
-                return "CPE.IN3_int"
+                return "CPE.IN3"
             case "IN4":
-                return "CPE.IN4_int"
+                return "CPE.IN4"
             case "IN5":
-                return "CPE.IN5_int"
+                return "CPE.IN5"
             case "IN6":
-                return "CPE.IN6_int"
+                return "CPE.IN6"
             case "IN7":
-                return "CPE.IN7_int"
+                return "CPE.IN7"
             case "IN8":
-                return "CPE.IN8_int"
+                return "CPE.IN8"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_BRIDGE":
@@ -3043,21 +3092,21 @@ def get_pin_connection_name(prim, pin):
             case "MUXOUT":
                 return "CPE.MUXOUT_int"
             case "IN1":
-                return "CPE.IN1_int"
+                return "CPE.IN1"
             case "IN2":
-                return "CPE.IN2_int"
+                return "CPE.IN2"
             case "IN3":
-                return "CPE.IN3_int"
+                return "CPE.IN3"
             case "IN4":
-                return "CPE.IN4_int"
+                return "CPE.IN4"
             case "IN5":
-                return "CPE.IN5_int"
+                return "CPE.IN5"
             case "IN6":
-                return "CPE.IN6_int"
+                return "CPE.IN6"
             case "IN7":
-                return "CPE.IN7_int"
+                return "CPE.IN7"
             case "IN8":
-                return "CPE.IN8_int"
+                return "CPE.IN8"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_FF_L":
@@ -3141,6 +3190,21 @@ def get_endpoints_for_type(type):
         create_wire("CPE.IN6"    , type="CPE_WIRE_L")
         create_wire("CPE.IN7"    , type="CPE_WIRE_L")
         create_wire("CPE.IN8"    , type="CPE_WIRE_L")
+
+        create_wire("CPE.D0_00_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_00_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D0_01_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_01_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D0_10_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_10_int", type="CPE_WIRE_INT")
+
+        create_wire("CPE.D0_02_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_02_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D0_03_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_03_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D0_11_int", type="CPE_WIRE_INT")
+        create_wire("CPE.D1_11_int", type="CPE_WIRE_INT")
+
         create_wire("CPE.IN1_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN2_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN3_int", type="CPE_WIRE_INT")
@@ -3149,6 +3213,7 @@ def get_endpoints_for_type(type):
         create_wire("CPE.IN6_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN7_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN8_int", type="CPE_WIRE_INT")
+
         create_wire("CPE.OUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.OUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT1_int", type="CPE_WIRE_INT")
@@ -3371,6 +3436,39 @@ def get_mux_connections_for_type(type):
         # CPE
         for i in range(1,9):
             create_direct(f"CPE.IN{i}", f"CPE.IN{i}_int", delay="del_dummy")
+
+        create_mux("CPE.IN1_int", "CPE.D0_00_int", 1, 0, False, "CPE.D0_00", True, delay="del_dummy")
+        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "CPE.D1_00", True, delay="del_dummy")
+        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "CPE.D0_00", True, delay="del_dummy")
+        create_mux("CPE.IN1_int", "CPE.D1_00_int", 1, 1, False, "CPE.D1_00", True, delay="del_dummy")
+
+        create_mux("CPE.IN3_int", "CPE.D0_01_int", 1, 0, False, "CPE.D0_01", True, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "CPE.D1_01", True, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "CPE.D0_01", True, delay="del_dummy")
+        create_mux("CPE.IN3_int", "CPE.D1_01_int", 1, 1, False, "CPE.D1_01", True, delay="del_dummy")
+
+        create_mux("CPE.D0_00_int", "CPE.D0_10_int", 1, 0, False, "CPE.D0_10", True, delay="del_dummy")
+        create_mux("CPE.D0_01_int", "CPE.D1_10_int", 1, 0, False, "CPE.D1_10", True, delay="del_dummy")
+        create_mux("CPE.D0_01_int", "CPE.D0_10_int", 1, 1, False, "CPE.D0_10", True, delay="del_dummy")
+        create_mux("CPE.D0_00_int", "CPE.D1_10_int", 1, 1, False, "CPE.D1_10", True, delay="del_dummy")
+
+        create_mux("CPE.IN5_int", "CPE.D0_02_int", 1, 0, False, "CPE.D0_02", True, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "CPE.D1_02", True, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "CPE.D0_02", True, delay="del_dummy")
+        create_mux("CPE.IN5_int", "CPE.D1_02_int", 1, 1, False, "CPE.D1_02", True, delay="del_dummy")
+
+        create_mux("CPE.IN7_int", "CPE.D0_03_int", 1, 0, False, "CPE.D0_03", True, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "CPE.D1_03", True, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "CPE.D0_03", True, delay="del_dummy")
+        create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "CPE.D1_03", True, delay="del_dummy")
+
+
+        create_mux("CPE.D0_02_int", "CPE.D0_11_int", 1, 0, False, "CPE.D0_11", True, delay="del_dummy")
+        create_mux("CPE.D0_03_int", "CPE.D1_11_int", 1, 0, False, "CPE.D1_11", True, delay="del_dummy")
+        create_mux("CPE.D0_03_int", "CPE.D0_11_int", 1, 1, False, "CPE.D0_11", True, delay="del_dummy")
+        create_mux("CPE.D0_02_int", "CPE.D1_11_int", 1, 1, False, "CPE.D1_11", True, delay="del_dummy")
+
+
         for p in range(1,13):
             plane = f"{p:02d}"
             for i in range(8):
