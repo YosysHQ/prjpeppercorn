@@ -522,11 +522,11 @@ PRIMITIVES_PINS = {
         Pin("D0_10"   ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("D1_10"   ,PinType.INPUT,  "CPE_WIRE", True),
 
-        # MX4 inputs
-        Pin("M1"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M2"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M3"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M4"      ,PinType.INPUT,  "CPE_WIRE", True),
+        # regular inputs
+        Pin("IN1"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"      ,PinType.INPUT,  "CPE_WIRE", True),
 
         Pin("OUT"     ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
@@ -559,11 +559,11 @@ PRIMITIVES_PINS = {
         # LUT2 3rd level input
         Pin("COMBIN"  ,PinType.INPUT,  "CPE_WIRE", True),
 
-        # MX4 inputs
-        Pin("M1"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M2"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M3"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("M4"      ,PinType.INPUT,  "CPE_WIRE", True),
+        # regular inputs
+        Pin("IN1"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"      ,PinType.INPUT,  "CPE_WIRE", True),
 
         # outputs
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
@@ -2997,13 +2997,13 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.D0_10_int"
             case "D1_10":
                 return "CPE.D1_10_int"
-            case "M1":
+            case "IN1":
                 return "CPE.IN1"
-            case "M2":
+            case "IN2":
                 return "CPE.IN2"
-            case "M3":
+            case "IN3":
                 return "CPE.IN3"
-            case "M4":
+            case "IN4":
                 return "CPE.IN4"
             case _:
                 return f"CPE.{pin.name}"
@@ -3013,6 +3013,10 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.DIN2_int"
             case "DOUT":
                 return "CPE.DOUT2_int"
+            case "CLK":
+                return "CPE.CLK_int"
+            case "EN":
+                return "CPE.EN_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_RAMIO_U":
@@ -3045,13 +3049,13 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.D0_11_int"
             case "D1_10":
                 return "CPE.D1_11_int"
-            case "M1":
+            case "IN1":
                 return "CPE.IN5"
-            case "M2":
+            case "IN2":
                 return "CPE.IN6"
-            case "M3":
+            case "IN3":
                 return "CPE.IN7"
-            case "M4":
+            case "IN4":
                 return "CPE.IN8"
             case "COMBIN":
                 return "CPE.COMBIN_int"
@@ -3115,6 +3119,10 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.DIN1_int"
             case "DOUT":
                 return "CPE.DOUT1_int"
+            case "CLK":
+                return "CPE.CLK_int"
+            case "EN":
+                return "CPE.EN_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_RAMIO_L":
@@ -3234,6 +3242,8 @@ def get_endpoints_for_type(type):
         create_wire("CPE.DOUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.CLK"    , type="CPE_WIRE_L")
         create_wire("CPE.EN"     , type="CPE_WIRE_L")
+        create_wire("CPE.CLK_int"    , type="CPE_WIRE_INT")
+        create_wire("CPE.EN_int"     , type="CPE_WIRE_INT")
         create_wire("CPE.SR"     , type="CPE_WIRE_L")
         create_wire("CPE.OUT1"   , type="CPE_WIRE_B")
         create_wire("CPE.OUT2"   , type="CPE_WIRE_B")
@@ -3437,36 +3447,47 @@ def get_mux_connections_for_type(type):
         for i in range(1,9):
             create_direct(f"CPE.IN{i}", f"CPE.IN{i}_int", delay="del_dummy")
 
-        create_mux("CPE.IN1_int", "CPE.D0_00_int", 1, 0, False, "CPE.D0_00", True, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "CPE.D1_00", True, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "CPE.D0_00", True, delay="del_dummy")
-        create_mux("CPE.IN1_int", "CPE.D1_00_int", 1, 1, False, "CPE.D1_00", True, delay="del_dummy")
+        create_mux("CPE.IN1_int", "CPE.D0_00_int", 1, 0, False, "CPE.D0_00", False, delay="del_dummy")
+        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "CPE.D1_00", False, delay="del_dummy")
+        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "CPE.D0_00", False, delay="del_dummy")
+        create_mux("CPE.IN1_int", "CPE.D1_00_int", 1, 1, False, "CPE.D1_00", False, delay="del_dummy")
 
-        create_mux("CPE.IN3_int", "CPE.D0_01_int", 1, 0, False, "CPE.D0_01", True, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "CPE.D1_01", True, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "CPE.D0_01", True, delay="del_dummy")
-        create_mux("CPE.IN3_int", "CPE.D1_01_int", 1, 1, False, "CPE.D1_01", True, delay="del_dummy")
+        create_mux("CPE.IN3_int", "CPE.D0_01_int", 1, 0, False, "CPE.D0_01", False, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "CPE.D1_01", False, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "CPE.D0_01", False, delay="del_dummy")
+        create_mux("CPE.IN3_int", "CPE.D1_01_int", 1, 1, False, "CPE.D1_01", False, delay="del_dummy")
 
-        create_mux("CPE.D0_00_int", "CPE.D0_10_int", 1, 0, False, "CPE.D0_10", True, delay="del_dummy")
-        create_mux("CPE.D0_01_int", "CPE.D1_10_int", 1, 0, False, "CPE.D1_10", True, delay="del_dummy")
-        create_mux("CPE.D0_01_int", "CPE.D0_10_int", 1, 1, False, "CPE.D0_10", True, delay="del_dummy")
-        create_mux("CPE.D0_00_int", "CPE.D1_10_int", 1, 1, False, "CPE.D1_10", True, delay="del_dummy")
+        create_mux("CPE.D0_00_int", "CPE.D0_10_int", 1, 0, False, "CPE.D0_10", False, delay="del_dummy")
+        create_mux("CPE.D0_01_int", "CPE.D1_10_int", 1, 0, False, "CPE.D1_10", False, delay="del_dummy")
+        create_mux("CPE.D0_01_int", "CPE.D0_10_int", 1, 1, False, "CPE.D0_10", False, delay="del_dummy")
+        create_mux("CPE.D0_00_int", "CPE.D1_10_int", 1, 1, False, "CPE.D1_10", False, delay="del_dummy")
 
-        create_mux("CPE.IN5_int", "CPE.D0_02_int", 1, 0, False, "CPE.D0_02", True, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "CPE.D1_02", True, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "CPE.D0_02", True, delay="del_dummy")
-        create_mux("CPE.IN5_int", "CPE.D1_02_int", 1, 1, False, "CPE.D1_02", True, delay="del_dummy")
+        create_mux("CPE.IN5_int", "CPE.D0_02_int", 1, 0, False, "CPE.D0_02", False, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "CPE.D1_02", False, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "CPE.D0_02", False, delay="del_dummy")
+        create_mux("CPE.IN5_int", "CPE.D1_02_int", 1, 1, False, "CPE.D1_02", False, delay="del_dummy")
 
-        create_mux("CPE.IN7_int", "CPE.D0_03_int", 1, 0, False, "CPE.D0_03", True, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "CPE.D1_03", True, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "CPE.D0_03", True, delay="del_dummy")
-        create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "CPE.D1_03", True, delay="del_dummy")
+        create_mux("CPE.IN7_int", "CPE.D0_03_int", 1, 0, False, "CPE.D0_03", False, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "CPE.D1_03", False, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "CPE.D0_03", False, delay="del_dummy")
+        create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "CPE.D1_03", False, delay="del_dummy")
 
 
-        create_mux("CPE.D0_02_int", "CPE.D0_11_int", 1, 0, False, "CPE.D0_11", True, delay="del_dummy")
-        create_mux("CPE.D0_03_int", "CPE.D1_11_int", 1, 0, False, "CPE.D1_11", True, delay="del_dummy")
-        create_mux("CPE.D0_03_int", "CPE.D0_11_int", 1, 1, False, "CPE.D0_11", True, delay="del_dummy")
-        create_mux("CPE.D0_02_int", "CPE.D1_11_int", 1, 1, False, "CPE.D1_11", True, delay="del_dummy")
+        create_mux("CPE.D0_02_int", "CPE.D0_11_int", 1, 0, False, "CPE.D0_11", False, delay="del_dummy")
+        create_mux("CPE.D0_03_int", "CPE.D1_11_int", 1, 0, False, "CPE.D1_11", False, delay="del_dummy")
+        create_mux("CPE.D0_03_int", "CPE.D0_11_int", 1, 1, False, "CPE.D0_11", False, delay="del_dummy")
+        create_mux("CPE.D0_02_int", "CPE.D1_11_int", 1, 1, False, "CPE.D1_11", False, delay="del_dummy")
+
+
+        create_mux("CPE.PINY1",     "CPE.IN2_int",   1, 1, False, "CPE.C_I1", False, delay="del_dummy")
+        create_mux("CPE.CINX",      "CPE.IN4_int",   1, 1, False, "CPE.C_I2", False, delay="del_dummy")
+        create_mux("CPE.PINY1",     "CPE.IN6_int",   1, 1, False, "CPE.C_I3", False, delay="del_dummy")
+        create_mux("CPE.PINX",      "CPE.IN8_int",   1, 1, False, "CPE.C_I4", False, delay="del_dummy")
+
+        create_mux("CPE.CLK",       "CPE.CLK_int",   1, 0, False, "CPE.C_CLKSEL", False, delay="del_dummy")
+        create_mux("CPE.CINY2",     "CPE.CLK_int",   1, 1, False, "CPE.C_CLKSEL", False, delay="del_dummy")
+        create_mux("CPE.EN",        "CPE.EN_int",    1, 0, False, "CPE.C_ENSEL", False, delay="del_dummy")
+        create_mux("CPE.PINY2",     "CPE.EN_int",    1, 1, False, "CPE.C_ENSEL", False, delay="del_dummy")
 
 
         for p in range(1,13):
