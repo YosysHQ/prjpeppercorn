@@ -3010,13 +3010,13 @@ def get_pin_connection_name(prim, pin):
             case "D1_10":
                 return "CPE.D1_10_int"
             case "IN1":
-                return "CPE.IN1"
+                return "CPE.IN1_int"
             case "IN2":
-                return "CPE.IN2"
+                return "CPE.IN2_int"
             case "IN3":
-                return "CPE.IN3"
+                return "CPE.IN3_int"
             case "IN4":
-                return "CPE.IN4"
+                return "CPE.IN4_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_FF_U":
@@ -3062,13 +3062,13 @@ def get_pin_connection_name(prim, pin):
             case "D1_10":
                 return "CPE.D1_11_int"
             case "IN1":
-                return "CPE.IN5"
+                return "CPE.IN5_int"
             case "IN2":
-                return "CPE.IN6"
+                return "CPE.IN6_int"
             case "IN3":
-                return "CPE.IN7"
+                return "CPE.IN7_int"
             case "IN4":
-                return "CPE.IN8"
+                return "CPE.IN8_int"
             case "COMBIN":
                 return "CPE.COMBIN_int"
             case _:
@@ -3110,21 +3110,21 @@ def get_pin_connection_name(prim, pin):
             case "MUXOUT":
                 return "CPE.MUXOUT_int"
             case "IN1":
-                return "CPE.IN1"
+                return "CPE.IN1_int"
             case "IN2":
-                return "CPE.IN2"
+                return "CPE.IN2_int"
             case "IN3":
-                return "CPE.IN3"
+                return "CPE.IN3_int"
             case "IN4":
-                return "CPE.IN4"
+                return "CPE.IN4_int"
             case "IN5":
-                return "CPE.IN5"
+                return "CPE.IN5_int"
             case "IN6":
-                return "CPE.IN6"
+                return "CPE.IN6_int"
             case "IN7":
-                return "CPE.IN7"
+                return "CPE.IN7_int"
             case "IN8":
-                return "CPE.IN8"
+                return "CPE.IN8_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_BRIDGE":
@@ -3132,21 +3132,21 @@ def get_pin_connection_name(prim, pin):
             case "MUXOUT":
                 return "CPE.MUXOUT_int"
             case "IN1":
-                return "CPE.IN1"
+                return "CPE.IN1_int"
             case "IN2":
-                return "CPE.IN2"
+                return "CPE.IN2_int"
             case "IN3":
-                return "CPE.IN3"
+                return "CPE.IN3_int"
             case "IN4":
-                return "CPE.IN4"
+                return "CPE.IN4_int"
             case "IN5":
-                return "CPE.IN5"
+                return "CPE.IN5_int"
             case "IN6":
-                return "CPE.IN6"
+                return "CPE.IN6_int"
             case "IN7":
-                return "CPE.IN7"
+                return "CPE.IN7_int"
             case "IN8":
-                return "CPE.IN8"
+                return "CPE.IN8_int"
             case _:
                 return f"CPE.{pin.name}"
     elif prim.type == "CPE_FF_L":
