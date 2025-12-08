@@ -304,12 +304,51 @@ def get_timings(name):
                     name = f"om_x{i1+1}_y{i2+1}_p{i3+9}_d{i4}"
                     val[name] = convert_delay(d)
 
+    cnt_ccy1 = 1
+    cnt_cpy1 = 1
+    cnt_pcy1 = 1
+    cnt_ppy1 = 1
     for i1 in range(10):  # [0..9]
         for i2 in range(19):  # [1..19]
             for i3 in range(10):  # [1..10]
                 d = timing_data.CPE_del_tile_arr[i1][i2][i3]
                 if d.name == "CPE": # not used
                     continue
+                # These are wrong names in timing database
+                # and need fixing
+                if d.name == "_ROUTING_CINY2_COUTY":
+                    d.name = "_ROUTING_CINY2_COUTY2"
+                if d.name == "_ROUTING_PINY2_POUTY":
+                    d.name = "_ROUTING_PINY2_POUTY2"
+
+                if d.name == "_ROUTING_CINY1_COUTY":
+                    if cnt_ccy1 == 1:
+                        d.name = "_ROUTING_CINY1_COUTY1"
+                        cnt_ccy1 = 2
+                    else:
+                        d.name = "_ROUTING_CINY1_COUTY2"
+                        cnt_ccy1 = 1
+                if d.name == "_ROUTING_CINY1_POUTY":
+                    if cnt_cpy1 == 1:
+                        d.name = "_ROUTING_CINY1_POUTY1"
+                        cnt_cpy1 = 2
+                    else:
+                        d.name = "_ROUTING_CINY1_POUTY2"
+                        cnt_cpy1 = 1
+                if d.name == "_ROUTING_PINY1_COUTY":
+                    if cnt_pcy1 == 1:
+                        d.name = "_ROUTING_PINY1_COUTY1"
+                        cnt_pcy1 = 2
+                    else:
+                        d.name = "_ROUTING_PINY1_COUTY2"
+                        cnt_pcy1 = 1
+                if d.name == "_ROUTING_PINY1_POUTY":
+                    if cnt_ppy1 == 1:
+                        d.name = "_ROUTING_PINY1_POUTY1"
+                        cnt_ppy1 = 2
+                    else:
+                        d.name = "_ROUTING_PINY1_POUTY2"
+                        cnt_ppy1 = 1
                 val[d.name] = convert_delay(d.val)
 
     for i1 in range(165):  # [-2..162]
