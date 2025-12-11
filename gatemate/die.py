@@ -3515,10 +3515,10 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.D0_02_int", "CPE.D1_11_int", 1, 1, False, "LUT2_11", False, delay="del_dummy")
 
 
-        #create_mux("CPE.PINY1",     "CPE.IN2_int",   1, 1, False, "CPE.C_I1", False, delay="del_dummy")
-        #create_mux("CPE.CINX",      "CPE.IN4_int",   1, 1, False, "CPE.C_I2", False, delay="del_dummy")
-        #create_mux("CPE.PINY1",     "CPE.IN6_int",   1, 1, False, "CPE.C_I3", False, delay="del_dummy")
-        #create_mux("CPE.PINX",      "CPE.IN8_int",   1, 1, False, "CPE.C_I4", False, delay="del_dummy")
+        create_mux("CPE.PINY1",     "CPE.D1_00_int", 1, 1, False, "CPE.C_I1", False, delay="del_dummy")
+        create_mux("CPE.CINX",      "CPE.D1_01_int", 1, 1, False, "CPE.C_I2", False, delay="del_dummy")
+        create_mux("CPE.PINY1",     "CPE.D1_02_int", 1, 1, False, "CPE.C_I3", False, delay="del_dummy")
+        create_mux("CPE.PINX",      "CPE.D1_03_int", 1, 1, False, "CPE.C_I4", False, delay="del_dummy")
 
         create_mux("CPE.CLK",       "CPE.CLK_int",   1, 0, False, "C_CLKSEL", False, delay="del_dummy")
         create_mux("CPE.CINY2",     "CPE.CLK_int",   1, 1, False, "C_CLKSEL", False, delay="del_dummy")
