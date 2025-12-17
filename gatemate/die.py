@@ -224,6 +224,8 @@ class MUX:
     visible: bool
     config: bool
     delay: str
+    data: int
+    mask: int
 
 @dataclass
 class Location:
@@ -3469,11 +3471,17 @@ def get_endpoints_for_type(type):
 
     return wires
 
+
+C_I1 = 1 << 0
+C_I2 = 1 << 1
+C_I3 = 1 << 2
+C_I4 = 1 << 3
+
 def get_mux_connections_for_type(type):
     muxes = []
-    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy"):
+    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy", data = 0, mask = 0):
         name = dst if name is None else name
-        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay))
+        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay, data, mask))
 
     def create_direct(src,dst, delay = "del_dummy"):
         create_mux(src,dst,0,0,False, None, visible=False, delay = delay)
@@ -3484,13 +3492,13 @@ def get_mux_connections_for_type(type):
             create_direct(f"CPE.IN{i}", f"CPE.IN{i}_int", delay="del_dummy")
 
         create_mux("CPE.IN1_int", "CPE.D0_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy")
+        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy", data = 0, mask = C_I1)
+        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy", data = 0, mask = C_I1)
         create_mux("CPE.IN1_int", "CPE.D1_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy")
 
         create_mux("CPE.IN3_int", "CPE.D0_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy", data = 0, mask = C_I2)
+        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy", data = 0, mask = C_I2)
         create_mux("CPE.IN3_int", "CPE.D1_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy")
 
         create_mux("CPE.D0_00_int", "CPE.D0_10_int", 1, 0, False, "LUT2_10", False, delay="del_dummy")
@@ -3499,13 +3507,13 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.D0_00_int", "CPE.D1_10_int", 1, 1, False, "LUT2_10", False, delay="del_dummy")
 
         create_mux("CPE.IN5_int", "CPE.D0_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy", data = 0, mask = C_I3)
+        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy", data = 0, mask = C_I3)
         create_mux("CPE.IN5_int", "CPE.D1_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy")
 
         create_mux("CPE.IN7_int", "CPE.D0_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy", data = 0, mask = C_I4)
+        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy", data = 0, mask = C_I4)
         create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
 
 
@@ -3515,16 +3523,18 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.D0_02_int", "CPE.D1_11_int", 1, 1, False, "LUT2_11", False, delay="del_dummy")
 
 
-        #create_mux("CPE.PINY1",     "CPE.D1_00_int", 1, 1, False, "CPE.C_I1", False, delay="del_dummy")
-        #create_mux("CPE.CINX",      "CPE.D1_01_int", 1, 1, False, "CPE.C_I2", False, delay="del_dummy")
-        #create_mux("CPE.PINY1",     "CPE.D1_02_int", 1, 1, False, "CPE.C_I3", False, delay="del_dummy")
-        #create_mux("CPE.PINX",      "CPE.D1_03_int", 1, 1, False, "CPE.C_I4", False, delay="del_dummy")
+        create_mux("CPE.PINY1",     "CPE.D1_00_int", 1, 1, False, "CPE.C_I1", False, delay="del_dummy", data = C_I1, mask = C_I1)
+        create_mux("CPE.CINX",      "CPE.D1_01_int", 1, 1, False, "CPE.C_I2", False, delay="del_dummy", data = C_I2, mask = C_I2)
+        create_mux("CPE.PINY1",     "CPE.D1_02_int", 1, 1, False, "CPE.C_I3", False, delay="del_dummy", data = C_I3, mask = C_I3)
+        create_mux("CPE.PINX",      "CPE.D1_03_int", 1, 1, False, "CPE.C_I4", False, delay="del_dummy", data = C_I4, mask = C_I4)
 
         create_mux("CPE.CLK",       "CPE.CLK_int",   1, 0, False, "C_CLKSEL", False, delay="del_dummy")
         create_mux("CPE.CINY2",     "CPE.CLK_int",   1, 1, False, "C_CLKSEL", False, delay="del_dummy")
         create_mux("CPE.EN",        "CPE.EN_int",    1, 0, False, "C_ENSEL", False, delay="del_dummy")
         create_mux("CPE.PINY2",     "CPE.EN_int",    1, 1, False, "C_ENSEL", False, delay="del_dummy")
 
+        #create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINY2_POUTY2")
+        #create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2")
         create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2")
 
         for p in range(1,13):
