@@ -514,21 +514,21 @@ RAM_HALF_PINS =  [
 PRIMITIVES_PINS = {
     "CPE_LT_U": [
         # LUT2 first level
-        Pin("D0_00"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_00"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D0_01"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_00"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_00"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_01"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_01"  ,PinType.INPUT,  "CPE_WIRE", True),
         # LUT2 2nd level
-        Pin("D0_10"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_10"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_10"  ,PinType.INPUT,  "CPE_WIRE", True),
 
         # regular inputs
-        Pin("IN1"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN2"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN3"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN4"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
 
-        Pin("OUT"     ,PinType.OUTPUT, "CPE_WIRE", True),
+        Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("CPOUT"  ,PinType.OUTPUT, "CPE_WIRE", True),
         Pin("PINY1"  ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("CINX"   ,PinType.INPUT,  "CPE_WIRE", True),
@@ -548,22 +548,22 @@ PRIMITIVES_PINS = {
     ],
     "CPE_LT_L": [
         # LUT2 first level
-        Pin("D0_00"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_00"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D0_01"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_01"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_00"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_00"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_01"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_01"  ,PinType.INPUT,  "CPE_WIRE", True),
         # LUT2 2nd level
-        Pin("D0_10"   ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("D1_10"   ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D0_10"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("D1_10"  ,PinType.INPUT,  "CPE_WIRE", True),
 
         # LUT2 3rd level input
-        Pin("COMBIN"  ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("COMBIN" ,PinType.INPUT,  "CPE_WIRE", True),
 
         # regular inputs
-        Pin("IN1"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN2"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN3"      ,PinType.INPUT,  "CPE_WIRE", True),
-        Pin("IN4"      ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN1"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN2"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN3"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("IN4"    ,PinType.INPUT,  "CPE_WIRE", True),
 
         # outputs
         Pin("OUT"    ,PinType.OUTPUT, "CPE_WIRE", True),
@@ -3278,8 +3278,8 @@ def get_endpoints_for_type(type):
         create_wire("CPE.DOUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.CLK"    , type="CPE_WIRE_L")
         create_wire("CPE.EN"     , type="CPE_WIRE_L")
-        create_wire("CPE.CLK_int"    , type="CPE_WIRE_INT")
-        create_wire("CPE.EN_int"     , type="CPE_WIRE_INT")
+        create_wire("CPE.CLK_int", type="CPE_WIRE_INT")
+        create_wire("CPE.EN_int" , type="CPE_WIRE_INT")
         create_wire("CPE.SR"     , type="CPE_WIRE_L")
         create_wire("CPE.OUT1"   , type="CPE_WIRE_B")
         create_wire("CPE.OUT2"   , type="CPE_WIRE_B")
@@ -3507,7 +3507,6 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
         create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
         create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
-
 
         create_mux("CPE.D0_02_int", "CPE.D0_11_int", 1, 0, False, "LUT2_11", False, delay="del_dummy")
         create_mux("CPE.D0_03_int", "CPE.D1_11_int", 1, 0, False, "LUT2_11", False, delay="del_dummy")
