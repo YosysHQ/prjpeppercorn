@@ -3258,6 +3258,11 @@ def get_endpoints_for_type(type):
         create_wire("CPE.IN7_int", type="CPE_WIRE_INT")
         create_wire("CPE.IN8_int", type="CPE_WIRE_INT")
 
+        create_wire("CPE.TI2_int", type="CPE_WIRE_INT")
+        create_wire("CPE.TI4_int", type="CPE_WIRE_INT")
+        create_wire("CPE.TI6_int", type="CPE_WIRE_INT")
+        create_wire("CPE.TI8_int", type="CPE_WIRE_INT")
+
         create_wire("CPE.OUT1_int", type="CPE_WIRE_INT")
         create_wire("CPE.OUT2_int", type="CPE_WIRE_INT")
         create_wire("CPE.COMBOUT1_int", type="CPE_WIRE_INT")
@@ -3483,14 +3488,23 @@ def get_mux_connections_for_type(type):
         for i in range(1,9):
             create_direct(f"CPE.IN{i}", f"CPE.IN{i}_int", delay="del_dummy")
 
+        create_mux("CPE.IN2_int", "CPE.TI2_int", 1, 0, False, "C_I1", False, delay="del_dummy")
+        create_mux("CPE.IN4_int", "CPE.TI4_int", 1, 0, False, "C_I2", False, delay="del_dummy")
+        create_mux("CPE.IN6_int", "CPE.TI6_int", 1, 0, False, "C_I3", False, delay="del_dummy")
+        create_mux("CPE.IN8_int", "CPE.TI8_int", 1, 0, False, "C_I4", False, delay="del_dummy")
+        create_mux("CPE.PINY1",   "CPE.TI2_int", 1, 1, False, "C_I1", False, delay="del_dummy")
+        create_mux("CPE.CINX",    "CPE.TI4_int", 1, 1, False, "C_I2", False, delay="del_dummy")
+        create_mux("CPE.PINY1",   "CPE.TI6_int", 1, 1, False, "C_I3", False, delay="del_dummy")
+        create_mux("CPE.PINX",    "CPE.TI8_int", 1, 1, False, "C_I4", False, delay="del_dummy")
+
         create_mux("CPE.IN1_int", "CPE.D0_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D1_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy")
-        create_mux("CPE.IN2_int", "CPE.D0_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy")
+        create_mux("CPE.TI2_int", "CPE.D1_00_int", 1, 0, False, "LUT2_00", False, delay="del_dummy")
+        create_mux("CPE.TI2_int", "CPE.D0_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy")
         create_mux("CPE.IN1_int", "CPE.D1_00_int", 1, 1, False, "LUT2_00", False, delay="del_dummy")
 
         create_mux("CPE.IN3_int", "CPE.D0_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D1_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy")
-        create_mux("CPE.IN4_int", "CPE.D0_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy")
+        create_mux("CPE.TI4_int", "CPE.D1_01_int", 1, 0, False, "LUT2_01", False, delay="del_dummy")
+        create_mux("CPE.TI4_int", "CPE.D0_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy")
         create_mux("CPE.IN3_int", "CPE.D1_01_int", 1, 1, False, "LUT2_01", False, delay="del_dummy")
 
         create_mux("CPE.D0_00_int", "CPE.D0_10_int", 1, 0, False, "LUT2_10", False, delay="del_dummy")
@@ -3499,13 +3513,13 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.D0_00_int", "CPE.D1_10_int", 1, 1, False, "LUT2_10", False, delay="del_dummy")
 
         create_mux("CPE.IN5_int", "CPE.D0_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D1_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy")
-        create_mux("CPE.IN6_int", "CPE.D0_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy")
+        create_mux("CPE.TI6_int", "CPE.D1_02_int", 1, 0, False, "LUT2_02", False, delay="del_dummy")
+        create_mux("CPE.TI6_int", "CPE.D0_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy")
         create_mux("CPE.IN5_int", "CPE.D1_02_int", 1, 1, False, "LUT2_02", False, delay="del_dummy")
 
         create_mux("CPE.IN7_int", "CPE.D0_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D1_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
-        create_mux("CPE.IN8_int", "CPE.D0_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
+        create_mux("CPE.TI8_int", "CPE.D1_03_int", 1, 0, False, "LUT2_03", False, delay="del_dummy")
+        create_mux("CPE.TI8_int", "CPE.D0_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
         create_mux("CPE.IN7_int", "CPE.D1_03_int", 1, 1, False, "LUT2_03", False, delay="del_dummy")
 
         create_mux("CPE.D0_02_int", "CPE.D0_11_int", 1, 0, False, "LUT2_11", False, delay="del_dummy")
