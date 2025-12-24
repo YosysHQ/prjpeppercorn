@@ -535,6 +535,10 @@ PRIMITIVES_PINS = {
     ],
     "CPE_FF_U": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CLK_INT",PinType.INPUT,  "CPE_WIRE", True),
+        Pin("EN_INT" ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY2",  PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY2",  PinType.INPUT,  "CPE_WIRE", True),
         Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("EN"     ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("SR"     ,PinType.INPUT,  "CPE_WIRE", True),
@@ -584,6 +588,10 @@ PRIMITIVES_PINS = {
     ],
     "CPE_FF_L": [
         Pin("DIN"    ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CLK_INT",PinType.INPUT,  "CPE_WIRE", True),
+        Pin("EN_INT" ,PinType.INPUT,  "CPE_WIRE", True),
+        Pin("CINY2",  PinType.INPUT,  "CPE_WIRE", True),
+        Pin("PINY2",  PinType.INPUT,  "CPE_WIRE", True),
         Pin("CLK"    ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("EN"     ,PinType.INPUT,  "CPE_WIRE", True),
         Pin("SR"     ,PinType.INPUT,  "CPE_WIRE", True),
@@ -3025,9 +3033,9 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.DIN2_int"
             case "DOUT":
                 return "CPE.DOUT2_int"
-            case "CLK":
+            case "CLK_INT":
                 return "CPE.CLK_int"
-            case "EN":
+            case "EN_INT":
                 return "CPE.EN_int"
             case _:
                 return f"CPE.{pin.name}"
@@ -3155,9 +3163,9 @@ def get_pin_connection_name(prim, pin):
                 return "CPE.DIN1_int"
             case "DOUT":
                 return "CPE.DOUT1_int"
-            case "CLK":
+            case "CLK_INT":
                 return "CPE.CLK_int"
-            case "EN":
+            case "EN_INT":
                 return "CPE.EN_int"
             case _:
                 return f"CPE.{pin.name}"
