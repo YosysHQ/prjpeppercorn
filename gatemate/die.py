@@ -3484,6 +3484,23 @@ def get_endpoints_for_type(type):
 
     return wires
 
+
+IS_MULT = 1 << 0
+IS_ADDF = 1 << 1
+IS_COMP = 1 << 2
+C_SELX  = 1 << 3
+C_SELY1 = 1 << 4
+C_SELY2 = 1 << 5
+C_SEL_C = 1 << 6
+C_SEL_P = 1 << 7
+C_Y12   = 1 << 8
+C_CX_I  = 1 << 9
+C_CY1_I = 1 << 10
+C_CY2_I = 1 << 11
+C_PX_I  = 1 << 12
+C_PY1_I = 1 << 13
+C_PY2_I = 1 << 14
+
 def get_mux_connections_for_type(type):
     muxes = []
     def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy", data = 0, mask = 0):
@@ -3542,12 +3559,12 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.EN",        "CPE.EN_int",    1, 0, False, "C_ENSEL", False, delay="del_dummy")
         create_mux("CPE.PINY2",     "CPE.EN_int",    1, 1, False, "C_ENSEL", False, delay="del_dummy")
 
-        create_mux("CPE.PINX",      "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTX")
-        create_mux("CPE.CINX",      "CPE.COUTX",     1, 1, False, "PASS", False, delay="_ROUTING_CINX_COUTX")
-        create_mux("CPE.PINY1",     "CPE.POUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_PINY1_POUTY1")
-        create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINY2_POUTY2")
-        create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY1_COUTY1")
-        create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2")
+        create_mux("CPE.PINX",      "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTX"   , data=0, mask=C_PX_I | IS_MULT | IS_COMP)
+        create_mux("CPE.CINX",      "CPE.COUTX",     1, 1, False, "PASS", False, delay="_ROUTING_CINX_COUTX"   , data=0, mask=C_CX_I | IS_MULT | IS_ADDF)
+        create_mux("CPE.PINY1",     "CPE.POUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_PINY1_POUTY1" , data=0, mask=C_PY1_I | IS_COMP)
+        create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINY2_POUTY2" , data=0, mask=C_PY2_I | IS_MULT)
+        create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY1_COUTY1" , data=0, mask=C_CY1_I | IS_ADDF)
+        create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2" , data=0, mask=C_CY2_I | IS_MULT)
 
         for p in range(1,13):
             plane = f"{p:02d}"
