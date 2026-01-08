@@ -224,6 +224,8 @@ class MUX:
     visible: bool
     config: bool
     delay: str
+    data: int
+    mask: int
 
 @dataclass
 class Location:
@@ -3484,9 +3486,9 @@ def get_endpoints_for_type(type):
 
 def get_mux_connections_for_type(type):
     muxes = []
-    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy"):
+    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy", data = 0, mask = 0):
         name = dst if name is None else name
-        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay))
+        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay, data, mask))
 
     def create_direct(src,dst, delay = "del_dummy"):
         create_mux(src,dst,0,0,False, None, visible=False, delay = delay)
@@ -3540,8 +3542,11 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.EN",        "CPE.EN_int",    1, 0, False, "C_ENSEL", False, delay="del_dummy")
         create_mux("CPE.PINY2",     "CPE.EN_int",    1, 1, False, "C_ENSEL", False, delay="del_dummy")
 
-        #create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINY2_POUTY2")
-        #create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2")
+        create_mux("CPE.PINX",      "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTX")
+        create_mux("CPE.CINX",      "CPE.COUTX",     1, 1, False, "PASS", False, delay="_ROUTING_CINX_COUTX")
+        create_mux("CPE.PINY1",     "CPE.POUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_PINY1_POUTY1")
+        create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINY2_POUTY2")
+        create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY1_COUTY1")
         create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2")
 
         for p in range(1,13):
