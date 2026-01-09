@@ -3566,6 +3566,18 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINY1_COUTY1" , data=0, mask=C_CY1_I | IS_ADDF)
         create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTY2" , data=0, mask=C_CY2_I | IS_MULT)
 
+        #create_mux("CPE.CINY1",     "CPE.COUTX",     1, 1, False, "PASS", False, delay="_ROUTING_CINY1_COUTX"  , data=C_SEL_C | C_SELX | C_CX_I, mask=C_Y12 | C_SEL_C | C_SELX | C_CX_I | IS_MULT | IS_ADDF)
+        #create_mux("CPE.CINY2",     "CPE.COUTX",     1, 1, False, "PASS", False, delay="_ROUTING_CINY2_COUTX"  , data=C_Y12 | C_SEL_C | C_SELX | C_CX_I, mask=C_Y12 | C_SEL_C | C_SELX | C_CX_I | IS_MULT | IS_ADDF)
+
+        #create_mux("CPE.CINX",      "CPE.COUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_CINX_COUTY1"  , data=C_SEL_C | C_SELY1 | C_CY1_I, mask=C_SEL_C | C_SELY1 | C_CY1_I | IS_ADDF)
+        #create_mux("CPE.CINX",      "CPE.COUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_CINX_COUTY2"  , data=C_SEL_C | C_SELY2 | C_CY2_I, mask=C_SEL_C | C_SELY2 | C_CY2_I | IS_MULT)
+
+        #create_mux("CPE.PINY1",     "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINY1_POUTX"  , data=C_SEL_P | C_SELX | C_PX_I, mask=C_Y12 | C_SEL_P | C_SELX | C_PX_I | IS_MULT | IS_COMP)
+        #create_mux("CPE.PINY2",     "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINY1_POUTX"  , data=C_Y12 | C_SEL_P | C_SELX | C_PX_I, mask=C_Y12 | C_SEL_P | C_SELX | C_PX_I | IS_MULT | IS_COMP)
+
+        #create_mux("CPE.PINX",      "CPE.POUTY1",    1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTY1"  , data=C_SEL_P | C_SELY1 | C_PY1_I, mask=C_SEL_P | C_SELY1 | C_PY1_I | IS_COMP)
+        #create_mux("CPE.PINX",      "CPE.POUTY2",    1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTY2"  , data=C_SEL_P | C_SELY2 | C_PY2_I, mask=C_SEL_P | C_SELY2 | C_PY2_I | IS_MULT)
+
         for p in range(1,13):
             plane = f"{p:02d}"
             for i in range(8):
