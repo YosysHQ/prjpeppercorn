@@ -3630,8 +3630,8 @@ def get_mux_connections_for_type(type):
         create_direct("CPE.COMBOUT1_int", "CPE.COMBIN1_int", delay="del_dummy")
         create_direct("CPE.COMBOUT2_int", "CPE.COMBIN2_int", delay="del_dummy")
 
-        create_direct("CPE.OUT1_int", "CPE.OUT1_IN_int", delay="del_dummy")
-        create_direct("CPE.OUT2_int", "CPE.OUT2_IN_int", delay="del_dummy")
+        create_direct("CPE.OUT1", "CPE.OUT1_IN_int", delay="del_dummy")
+        create_direct("CPE.OUT2", "CPE.OUT2_IN_int", delay="del_dummy")
         create_direct("CPE.COMPOUT_int", "CPE.COMPOUT_IN_int", delay="del_dummy")
 
         create_direct("CPE.OUT1_int",    "CPE.OUT1", delay="del_dummy")
