@@ -224,9 +224,8 @@ class MUX:
     visible: bool
     config: bool
     delay: str
-    data: int
-    mask: int
-    resource : str
+    block: int
+    resource : int
 
 @dataclass
 class Location:
@@ -3511,27 +3510,28 @@ def get_endpoints_for_type(type):
     return wires
 
 
-IS_MULT = 1 << 0
-IS_ADDF = 1 << 1
-IS_COMP = 1 << 2
-C_SELX  = 1 << 3
-C_SELY1 = 1 << 4
-C_SELY2 = 1 << 5
-C_SEL_C = 1 << 6
-C_SEL_P = 1 << 7
-C_Y12   = 1 << 8
-C_CX_I  = 1 << 9
-C_CY1_I = 1 << 10
-C_CY2_I = 1 << 11
-C_PX_I  = 1 << 12
-C_PY1_I = 1 << 13
-C_PY2_I = 1 << 14
+C_SELX  = 1 << 0
+C_SELY1 = 1 << 1
+C_SELY2 = 1 << 2
+C_SEL_C = 1 << 3
+C_SEL_P = 1 << 4
+C_Y12   = 1 << 5
+C_CX_I  = 1 << 6
+C_CY1_I = 1 << 7
+C_CY2_I = 1 << 8
+C_PX_I  = 1 << 9
+C_PY1_I = 1 << 10
+C_PY2_I = 1 << 11
+
+IS_MULT = 1 << 29
+IS_ADDF = 1 << 30
+IS_COMP = 1 << 31
 
 def get_mux_connections_for_type(type):
     muxes = []
-    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy", data = 0, mask = 0, resource = ""):
+    def create_mux(src, dst, bits, value, invert, name = None, visible = True, config = False, delay = "del_dummy", block = 0, resource = 0):
         name = dst if name is None else name
-        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay, data, mask, resource))
+        muxes.append(MUX(src, dst, name, bits, value, invert, visible, config, delay, block, resource))
 
     def create_direct(src,dst, delay = "del_dummy"):
         create_mux(src,dst,0,0,False, None, visible=False, delay = delay)
@@ -3585,65 +3585,64 @@ def get_mux_connections_for_type(type):
         create_mux("CPE.EN",        "CPE.EN_int",    1, 0, False, "C_ENSEL", False, delay="del_dummy")
         create_mux("CPE.PINY2",     "CPE.EN_int",    1, 1, False, "C_ENSEL", False, delay="del_dummy")
 
-        create_mux("CPE.CINX",      "CPE.COUTX",     1, 0, False, "CPE.C_CX_I",  True, delay="del_dummy", resource="C_CX_I")
-        create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 0, False, "CPE.C_CY1_I", True, delay="del_dummy", resource="C_CY1_I")
-        create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 0, False, "CPE.C_CY2_I", True, delay="del_dummy", resource="C_CY2_I")
-        create_mux("CPE.PINX",      "CPE.POUTX",     1, 0, False, "CPE.C_PX_I",  True, delay="del_dummy", resource="C_PX_I")
-        create_mux("CPE.PINY1",     "CPE.POUTY1",    1, 0, False, "CPE.C_PY1_I", True, delay="del_dummy", resource="C_PY1_I")
-        create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 0, False, "CPE.C_PY2_I", True, delay="del_dummy", resource="C_PY2_I")
+        create_mux("CPE.CINX",      "CPE.COUTX",     1, 0, False, "CPE.C_CX_I",  True, delay="del_dummy", resource=C_CX_I,  block=IS_MULT | IS_ADDF)
+        create_mux("CPE.CINY1",     "CPE.COUTY1",    1, 0, False, "CPE.C_CY1_I", True, delay="del_dummy", resource=C_CY1_I, block=IS_ADDF)
+        create_mux("CPE.CINY2",     "CPE.COUTY2",    1, 0, False, "CPE.C_CY2_I", True, delay="del_dummy", resource=C_CY2_I, block=IS_MULT)
+        create_mux("CPE.PINX",      "CPE.POUTX",     1, 0, False, "CPE.C_PX_I",  True, delay="del_dummy", resource=C_PX_I,  block=IS_MULT | IS_COMP)
+        create_mux("CPE.PINY1",     "CPE.POUTY1",    1, 0, False, "CPE.C_PY1_I", True, delay="del_dummy", resource=C_PY1_I, block=IS_COMP)
+        create_mux("CPE.PINY2",     "CPE.POUTY2",    1, 0, False, "CPE.C_PY2_I", True, delay="del_dummy", resource=C_PY2_I, block=IS_MULT)
 
-        create_mux("CPE.OUT1_IN_int",   "CPE.CX_OUT",    1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.OUT2_IN_int",   "CPE.CX_OUT",    1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.OUT1_IN_int",   "CPE.CY1_OUT",   1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.OUT2_IN_int",   "CPE.CY1_OUT",   1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.OUT1_IN_int",   "CPE.CY2_OUT",   1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.OUT2_IN_int",   "CPE.CY2_OUT",   1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.OUT1_IN_int",   "CPE.PX_OUT",    1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.OUT2_IN_int",   "CPE.PX_OUT",    1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.OUT1_IN_int",   "CPE.PY1_OUT",   1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.OUT2_IN_int",   "CPE.PY1_OUT",   1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.OUT1_IN_int",   "CPE.PY2_OUT",   1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.OUT2_IN_int",   "CPE.PY2_OUT",   1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
+        create_mux("CPE.OUT1_IN_int",   "CPE.CX_OUT",    1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.OUT2_IN_int",   "CPE.CX_OUT",    1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.OUT1_IN_int",   "CPE.CY1_OUT",   1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.OUT2_IN_int",   "CPE.CY1_OUT",   1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.OUT1_IN_int",   "CPE.CY2_OUT",   1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.OUT2_IN_int",   "CPE.CY2_OUT",   1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.OUT1_IN_int",   "CPE.PX_OUT",    1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.OUT2_IN_int",   "CPE.PX_OUT",    1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.OUT1_IN_int",   "CPE.PY1_OUT",   1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.OUT2_IN_int",   "CPE.PY1_OUT",   1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.OUT1_IN_int",   "CPE.PY2_OUT",   1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.OUT2_IN_int",   "CPE.PY2_OUT",   1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
 
-        create_mux("CPE.CINY1",     "CPE.CIY12",    1, 0, False, "CPE.C_Y12", True, delay="del_dummy", resource="C_Y12")
-        create_mux("CPE.CINY2",     "CPE.CIY12",    1, 1, False, "CPE.C_Y12", True, delay="del_dummy", resource="C_Y12")
-        create_mux("CPE.PINY1",     "CPE.PIY12",    1, 0, False, "CPE.C_Y12", True, delay="del_dummy", resource="C_Y12")
-        create_mux("CPE.PINY2",     "CPE.PIY12",    1, 1, False, "CPE.C_Y12", True, delay="del_dummy", resource="C_Y12")
+        create_mux("CPE.CINY1",     "CPE.CIY12",    1, 0, False, "CPE.C_Y12", True, delay="del_dummy", resource=C_Y12)
+        create_mux("CPE.CINY2",     "CPE.CIY12",    1, 1, False, "CPE.C_Y12", True, delay="del_dummy", resource=C_Y12)
+        create_mux("CPE.PINY1",     "CPE.PIY12",    1, 0, False, "CPE.C_Y12", True, delay="del_dummy", resource=C_Y12)
+        create_mux("CPE.PINY2",     "CPE.PIY12",    1, 1, False, "CPE.C_Y12", True, delay="del_dummy", resource=C_Y12)
 
-        create_mux("CPE.CIY12",          "CPE.CX_OUT2",   1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.CX_OUT2",   1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.CINX",           "CPE.CY1_OUT2",  1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.CY1_OUT2",  1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.CINX",           "CPE.CY2_OUT2",  1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.CY2_OUT2",  1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.PIY12",          "CPE.PX_OUT2",   1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.PX_OUT2",   1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource="C_SELX")
-        create_mux("CPE.PINX",           "CPE.PY1_OUT2",  1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.PY1_OUT2",  1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource="C_SELY1")
-        create_mux("CPE.PINX",           "CPE.PY2_OUT2",  1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
-        create_mux("CPE.COMPOUT_IN_int", "CPE.PY2_OUT2",  1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource="C_SELY2")
+        create_mux("CPE.CIY12",          "CPE.CX_OUT2",   1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.CX_OUT2",   1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.CINX",           "CPE.CY1_OUT2",  1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.CY1_OUT2",  1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.CINX",           "CPE.CY2_OUT2",  1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.CY2_OUT2",  1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.PIY12",          "CPE.PX_OUT2",   1, 1, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.PX_OUT2",   1, 0, False, "CPE.C_SELX",  True, delay="del_dummy", resource=C_SELX)
+        create_mux("CPE.PINX",           "CPE.PY1_OUT2",  1, 1, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.PY1_OUT2",  1, 0, False, "CPE.C_SELY1", True, delay="del_dummy", resource=C_SELY1)
+        create_mux("CPE.PINX",           "CPE.PY2_OUT2",  1, 1, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
+        create_mux("CPE.COMPOUT_IN_int", "CPE.PY2_OUT2",  1, 0, False, "CPE.C_SELY2", True, delay="del_dummy", resource=C_SELY2)
 
+        create_mux("CPE.CX_OUT",    "CPE.CX_VAL",    1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.CY1_OUT",   "CPE.CY1_VAL",   1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.CY2_OUT",   "CPE.CY2_VAL",   1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.PX_OUT",    "CPE.PX_VAL",    1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
+        create_mux("CPE.PY1_OUT",   "CPE.PY1_VAL",   1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
+        create_mux("CPE.PY2_OUT",   "CPE.PY2_VAL",   1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
 
-        create_mux("CPE.CX_OUT",    "CPE.CX_VAL",    1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.CY1_OUT",   "CPE.CY1_VAL",   1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.CY2_OUT",   "CPE.CY2_VAL",   1, 0, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.PX_OUT",    "CPE.PX_VAL",    1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
-        create_mux("CPE.PY1_OUT",   "CPE.PY1_VAL",   1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
-        create_mux("CPE.PY2_OUT",   "CPE.PY2_VAL",   1, 0, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
+        create_mux("CPE.CX_OUT2",   "CPE.CX_VAL",    1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.CY1_OUT2",  "CPE.CY1_VAL",   1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.CY2_OUT2",  "CPE.CY2_VAL",   1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource=C_SEL_C)
+        create_mux("CPE.PX_OUT2",   "CPE.PX_VAL",    1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
+        create_mux("CPE.PY1_OUT2",  "CPE.PY1_VAL",   1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
+        create_mux("CPE.PY2_OUT2",  "CPE.PY2_VAL",   1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource=C_SEL_P)
 
-        create_mux("CPE.CX_OUT2",   "CPE.CX_VAL",    1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.CY1_OUT2",  "CPE.CY1_VAL",   1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.CY2_OUT2",  "CPE.CY2_VAL",   1, 1, False, "CPE.C_SEL_C", True, delay="del_dummy", resource="C_SEL_C")
-        create_mux("CPE.PX_OUT2",   "CPE.PX_VAL",    1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
-        create_mux("CPE.PY1_OUT2",  "CPE.PY1_VAL",   1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
-        create_mux("CPE.PY2_OUT2",  "CPE.PY2_VAL",   1, 1, False, "CPE.C_SEL_P", True, delay="del_dummy", resource="C_SEL_P")
-
-        create_mux("CPE.CX_VAL",    "CPE.COUTX",     1, 1, False, "CPE.C_CX_I",  True, delay="del_dummy", resource="C_CX_I")
-        create_mux("CPE.CY1_VAL",   "CPE.COUTY1",    1, 1, False, "CPE.C_CY1_I", True, delay="del_dummy", resource="C_CY1_I")
-        create_mux("CPE.CY2_VAL",   "CPE.COUTY2",    1, 1, False, "CPE.C_CY2_I", True, delay="del_dummy", resource="C_CY2_I")
-        create_mux("CPE.PX_VAL",    "CPE.POUTX",     1, 1, False, "CPE.C_PX_I",  True, delay="del_dummy", resource="C_PX_I")
-        create_mux("CPE.PY1_VAL",   "CPE.POUTY1",    1, 1, False, "CPE.C_PY1_I", True, delay="del_dummy", resource="C_PY1_I")
-        create_mux("CPE.PY2_VAL",   "CPE.POUTY2",    1, 1, False, "CPE.C_PY2_I", True, delay="del_dummy", resource="C_PY2_I")
+        create_mux("CPE.CX_VAL",    "CPE.COUTX",     1, 1, False, "CPE.C_CX_I",  True, delay="del_dummy", resource=C_CX_I,  block=IS_MULT | IS_ADDF)
+        create_mux("CPE.CY1_VAL",   "CPE.COUTY1",    1, 1, False, "CPE.C_CY1_I", True, delay="del_dummy", resource=C_CY1_I, block=IS_ADDF)
+        create_mux("CPE.CY2_VAL",   "CPE.COUTY2",    1, 1, False, "CPE.C_CY2_I", True, delay="del_dummy", resource=C_CY2_I, block=IS_MULT)
+        create_mux("CPE.PX_VAL",    "CPE.POUTX",     1, 1, False, "CPE.C_PX_I",  True, delay="del_dummy", resource=C_PX_I,  block=IS_MULT | IS_COMP)
+        create_mux("CPE.PY1_VAL",   "CPE.POUTY1",    1, 1, False, "CPE.C_PY1_I", True, delay="del_dummy", resource=C_PY1_I, block=IS_COMP)
+        create_mux("CPE.PY2_VAL",   "CPE.POUTY2",    1, 1, False, "CPE.C_PY2_I", True, delay="del_dummy", resource=C_PY2_I, block=IS_MULT)
 
 
         #create_mux("CPE.PINX",      "CPE.POUTX",     1, 1, False, "PASS", False, delay="_ROUTING_PINX_POUTX"   , data=0, mask=C_PX_I | IS_MULT | IS_COMP)
