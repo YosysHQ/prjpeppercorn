@@ -554,10 +554,26 @@ def get_timings(name):
 
     #val["del_preplace"] = convert_delay(timing_data.timing_delays.del_preplace.val)
 
+    cnt_comb_cy1 = 1
+    cnt_comb_py1 = 1
     for i1 in range(42):  # [1..42]
         d = timing_data.timing_delays.del_CPE_timing_mod[i1]
         if d.name == "": # not used
             continue
+        if d.name == "comb12_compout_COUTY":
+            if cnt_comb_cy1 == 1:
+                d.name = "comb12_compout_COUTY1"
+                cnt_comb_cy1 = 2
+            else:
+                d.name = "comb12_compout_COUTY2"
+                cnt_comb_cy1 = 1
+        if d.name == "comb12_compout_POUTY":
+            if cnt_comb_py1 == 1:
+                d.name = "comb12_compout_POUTY1"
+                cnt_comb_py1 = 2
+            else:
+                d.name = "comb12_compout_POUTY2"
+                cnt_comb_py1 = 1
         val[d.name] = convert_delay(d.val)
 
     return val
