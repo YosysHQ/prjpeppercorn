@@ -3653,7 +3653,7 @@ def get_mux_connections_for_type(type):
                     create_mux(f"OM.P{plane}.D{i}", f"OM.P{plane}.Y", 2, i, True, f"OM.P{plane}", delay = f"om_x1_y1_p{p}_d{i}")
 
         for i in range(1,9):
-            create_mux(f"CPE.IN{i}_int", "CPE.MUXOUT_int", 3, i-1, False, "CPE.C_SN", False, delay=f"_MX8_IN{i}_OUT1")
+            create_mux(f"CPE.IN{i}_int", "CPE.MUXOUT_int", 3, i-1, False, "CPE.C_SN", True, delay=f"_MX8_IN{i}_OUT1")
 
         create_direct("IM.P01.Y","CPE.IN1")
         create_direct("IM.P02.Y","CPE.IN2")
@@ -3799,13 +3799,13 @@ def get_mux_connections_for_type(type):
             create_mux(f"LES.CLOCK{i}", "LES.CLOCK_SEL1_int", 2, i, False, "LES.CLOCK_SEL1", delay="del_dummy")
             create_mux(f"LES.CLOCK{i}", "LES.CLOCK_SEL2_int", 2, i, False, "LES.CLOCK_SEL2", delay="del_dummy")
 
-        # Note there is error in schematics for both outputs
-        create_mux("LES.MDIE1_SEL1_int", "LES.CPE_CINX", 2, 1, False, "LES.CINX_SEL", delay="del_left_couty2")
-        create_mux("LES.SB_Y3_SEL1_int", "LES.CPE_CINX", 2, 2, False, "LES.CINX_SEL", delay="del_left_SB_couty2")
+        # Note there is error in schematics
+        create_mux("LES.SB_Y3_SEL1_int", "LES.CPE_CINX", 2, 1, False, "LES.CINX_SEL", delay="del_left_SB_couty2")
+        create_mux("LES.MDIE1_SEL1_int", "LES.CPE_CINX", 2, 2, False, "LES.CINX_SEL", delay="del_left_couty2")
         create_mux("LES.CLOCK_SEL1_int", "LES.CPE_CINX", 2, 3, False, "LES.CINX_SEL", delay="del_left_glb_couty2")
 
-        create_mux("LES.MDIE1_SEL2_int", "LES.CPE_PINX", 2, 1, False, "LES.PINX_SEL", delay="del_left_pouty2")
-        create_mux("LES.SB_Y3_SEL2_int", "LES.CPE_PINX", 2, 2, False, "LES.PINX_SEL", delay="del_left_SB_pouty2")
+        create_mux("LES.SB_Y3_SEL2_int", "LES.CPE_PINX", 2, 1, False, "LES.PINX_SEL", delay="del_left_SB_pouty2")
+        create_mux("LES.MDIE1_SEL2_int", "LES.CPE_PINX", 2, 2, False, "LES.PINX_SEL", delay="del_left_pouty2")
         create_mux("LES.CLOCK_SEL2_int", "LES.CPE_PINX", 2, 3, False, "LES.PINX_SEL", delay="del_left_glb_pouty2")
 
     if "BES" in type:
