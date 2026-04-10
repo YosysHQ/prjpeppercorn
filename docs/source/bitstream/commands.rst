@@ -255,8 +255,11 @@ CMD_CHG_STATUS
    * - 
      - 5
      - Fill RAM enable
+   * -
+     - 6
+     - Enable SERDES regfile access from CPE
    * - 
-     - 6..7
+     - 7
      - Unused
    * - 1
      - 0..3
