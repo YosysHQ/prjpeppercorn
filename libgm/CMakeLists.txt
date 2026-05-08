@@ -34,19 +34,8 @@ else()
         set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
 endif()
-if (WASI)
-    add_definitions(
-        -DBOOST_EXCEPTION_DISABLE
-        -DBOOST_NO_EXCEPTIONS
-        -DBOOST_SP_NO_ATOMIC_ACCESS
-        -DBOOST_AC_DISABLE_THREADS
-        -DBOOST_NO_CXX11_HDR_MUTEX
-        -DBOOST_NO_CXX11_HDR_ATOMIC
-    )
-endif()
-set(boost_libs program_options)
 
-find_package(Boost REQUIRED COMPONENTS ${boost_libs})
+find_package(Boost REQUIRED COMPONENTS program_options)
 
 find_package(Git)
 
