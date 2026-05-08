@@ -23,7 +23,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <streambuf>
-#include "wasmexcept.hpp"
 #include "Bitstream.hpp"
 #include "Chip.hpp"
 #include "ChipConfig.hpp"
