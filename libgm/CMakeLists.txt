@@ -100,7 +100,7 @@ target_compile_definitions(${PROGRAM_PREFIX}gmpack PRIVATE GATEMATE_RPATH_DATADI
 target_link_libraries(${PROGRAM_PREFIX}gmpack gatemate ${Boost_LIBRARIES} ${CMAKE_DL_LIBS} ${link_param})
 setup_rpath(${PROGRAM_PREFIX}gmpack)
 
-if (WASI)
+if (CMAKE_SYSTEM_NAME STREQUAL "WASI")
     foreach (tool gmunpack gmpack)
         # set(CMAKE_EXECUTABLE_SUFFIX) breaks CMake tests for some reason
         set_property(TARGET ${PROGRAM_PREFIX}${tool} PROPERTY SUFFIX ".wasm")
