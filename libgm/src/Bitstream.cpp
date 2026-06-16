@@ -377,7 +377,7 @@ class BitstreamReadWriter
         for (int i = pos; i < pos + size - Die::PLL_CFG_SIZE; i++)
             write_byte(data[i]);
         insert_crc16();
-        write_nops(6);
+        write_nops(Die::PLL_CFG_SIZE);
     }
 
     void write_cmd_chg_status(uint8_t data)
