@@ -589,8 +589,10 @@ Chip Bitstream::deserialise_chip()
                     BITSTREAM_DEBUG("iteration " << (iteration + 1));
 
                 // Detection of FF initialization is possible on
-                // last iteration
-                if (iteration == 2) {
+                // last iteration. The first one carries no CPE data
+                // and is left out when the rest of the tile is empty,
+                // the last one is then the second.
+                if (iteration == 2 || (iteration == 1 && !die->is_cpe_empty(x_pos, y_pos))) {
                     std::vector<uint8_t> data = die->get_latch_config(x_pos, y_pos);
                     // Make sure we have CPE data
                     // even if uninitialized
