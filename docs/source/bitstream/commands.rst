@@ -174,7 +174,8 @@ CMD_PLL
      - Config data for clock matrix CLKMUX PLL3 byte 1
 
 .. warning::
-    This command have data after payload, and it consists of 6 NOP bytes ``0x00 0x00 0x00 0x00 0x00 0x00``.
+    This command have data after payload, and it consists of at least 12 NOP bytes ``0x00``, as many as the PLL configuration is long.
+    With fewer, the PLL configuration is incomplete in quad SPI mode. Bitstreams written by older ``gmpack`` versions have 6.
 
 CMD_SPLL
 ---------

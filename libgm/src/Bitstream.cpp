@@ -215,6 +215,13 @@ class BitstreamReadWriter
             get_byte();
     }
 
+    // Skip over NOP (0x00) bytes while updating CRC, no command opcode is 0x00
+    void skip_nops()
+    {
+        while (!is_end() && *iter == 0x00)
+            get_byte();
+    }
+
     // Write a little endian uint16_t into the bitstream
     void write_uint16(uint16_t val)
     {
@@ -484,7 +491,7 @@ int Bitstream::determine_size(int *max_die_x, int *max_die_y)
             if (cmd == CMD_CFGMODE)
                 rd.skip_bytes(4);
             if (cmd == CMD_PLL)
-                rd.skip_bytes(6);
+                rd.skip_nops();
             if (cmd == CMD_CHG_STATUS)
                 rd.skip_bytes(9);
             if (cmd == CMD_JUMP)
@@ -674,8 +681,9 @@ Chip Bitstream::deserialise_chip()
             // Check data CRC
             check_crc(rd);
 
-            // Skip bytes
-            rd.skip_bytes(6);
+            // Skip NOPs: Die::PLL_CFG_SIZE (12) of them, 6 in bitstreams
+            // written before gmpack was changed to meet that minimum
+            rd.skip_nops();
             break;
         case CMD_LXLYS:
             if (length != 2)
