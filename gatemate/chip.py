@@ -23,7 +23,7 @@ from dataclasses import dataclass
 from typing import List, Dict, FrozenSet, Optional
 from timing import decompress_timing
 
-DATABASE_VERSION = 1.13
+DATABASE_VERSION = 1.14
 
 # WA bank pin whitelists for CCGM1A2:
 # All A0..A8 and B0..B8 are on die 1A except B3, which is assigned to die 1B.
