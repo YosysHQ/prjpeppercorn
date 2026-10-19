@@ -339,6 +339,8 @@ def get_timings(name):
                     d.name = "_ROUTING_CINY2_COUTY2"
                 if d.name == "_ROUTING_PINY2_POUTY":
                     d.name = "_ROUTING_PINY2_POUTY2"
+                if d.name == "_ADDF2Y1_CINY1_COUTY":
+                    d.name = "_ADDF2Y1_CINY1_COUTY1"
 
                 if d.name == "_ROUTING_CINY1_COUTY":
                     if cnt_ccy1 == 1:
