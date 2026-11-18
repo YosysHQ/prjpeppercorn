@@ -2392,7 +2392,7 @@
 	)
 	(text "MUX4b"
 		(exclude_from_sim no)
-		(at 48.26 105.41 0)
+		(at 53.34 105.41 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2472,7 +2472,7 @@
 	)
 	(text "C = L10\nX = L11"
 		(exclude_from_sim no)
-		(at 35.56 32.512 0)
+		(at 33.655 32.512 0)
 		(effects
 			(font
 				(size 1 1)
@@ -2492,7 +2492,7 @@
 	)
 	(text "C = L11\nX = L10"
 		(exclude_from_sim no)
-		(at 33.02 108.458 0)
+		(at 33.655 108.458 0)
 		(effects
 			(font
 				(size 1 1)
@@ -2502,7 +2502,7 @@
 	)
 	(text "MUX4a"
 		(exclude_from_sim no)
-		(at 53.34 29.464 0)
+		(at 48.26 29.464 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2528,7 +2528,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 104.14) (xy 40.64 104.14)
+			(xy 40.005 104.14) (xy 45.72 104.14)
 		)
 		(stroke
 			(width 0)
@@ -2578,16 +2578,6 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 52.07) (xy 48.26 97.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "125b3507-2033-46b3-b666-5dd06dbdc033")
-	)
-	(wire
-		(pts
 			(xy 25.4 40.64) (xy 30.48 40.64)
 		)
 		(stroke
@@ -2598,7 +2588,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 106.68) (xy 26.67 106.68)
+			(xy 25.4 106.68) (xy 27.305 106.68)
 		)
 		(stroke
 			(width 0)
@@ -2618,7 +2608,7 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 33.02) (xy 45.72 33.02)
+			(xy 40.005 33.02) (xy 40.64 33.02)
 		)
 		(stroke
 			(width 0)
@@ -2628,7 +2618,7 @@
 	)
 	(wire
 		(pts
-			(xy 55.88 105.41) (xy 86.36 105.41)
+			(xy 60.96 105.41) (xy 86.36 105.41)
 		)
 		(stroke
 			(width 0)
@@ -2658,17 +2648,7 @@
 	)
 	(wire
 		(pts
-			(xy 50.8 54.61) (xy 50.8 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4c3e0983-fc1a-4d07-ae5c-62742291b2a6")
-	)
-	(wire
-		(pts
-			(xy 41.91 30.48) (xy 45.72 30.48)
+			(xy 40.005 30.48) (xy 40.64 30.48)
 		)
 		(stroke
 			(width 0)
@@ -2688,13 +2668,13 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 27.94) (xy 29.21 27.94)
+			(xy 53.34 67.31) (xy 53.34 97.79)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "4d224ad1-52c5-4621-a4c8-19f230ee5dca")
+		(uuid "4ffa3b77-7aa1-404f-9d4e-2ecc0e99ad8f")
 	)
 	(wire
 		(pts
@@ -2718,23 +2698,13 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 25.4) (xy 45.72 25.4)
+			(xy 40.005 25.4) (xy 40.64 25.4)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "5181b66d-1286-44b5-86d1-dffc50a4978e")
-	)
-	(wire
-		(pts
-			(xy 53.34 36.83) (xy 53.34 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "61e351b7-7bb5-4e54-bde6-642d22321641")
 	)
 	(wire
 		(pts
@@ -2748,7 +2718,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 101.6) (xy 40.64 101.6)
+			(xy 40.005 101.6) (xy 45.72 101.6)
 		)
 		(stroke
 			(width 0)
@@ -2778,26 +2748,6 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 30.48) (xy 29.21 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7e721205-1cc4-460d-b2e9-d65b41df597c")
-	)
-	(wire
-		(pts
-			(xy 25.4 25.4) (xy 29.21 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "82b7425a-e905-495a-bbcd-7fe02ff117b4")
-	)
-	(wire
-		(pts
 			(xy 115.57 52.07) (xy 115.57 53.34)
 		)
 		(stroke
@@ -2805,6 +2755,26 @@
 			(type default)
 		)
 		(uuid "88a746cd-f7f1-4245-a5d0-0349eab0a695")
+	)
+	(wire
+		(pts
+			(xy 25.4 33.02) (xy 27.305 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89d8c40f-dc31-480a-bdd1-0351e310740a")
+	)
+	(wire
+		(pts
+			(xy 25.4 25.4) (xy 27.305 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8c0601ee-597d-4025-90c7-aa9e774e321c")
 	)
 	(wire
 		(pts
@@ -2828,6 +2798,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 36.83) (xy 48.26 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a45486eb-c183-49e4-9269-57fc4d8fef94")
+	)
+	(wire
+		(pts
 			(xy 40.64 69.85) (xy 40.64 80.01)
 		)
 		(stroke
@@ -2838,7 +2818,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 101.6) (xy 26.67 101.6)
+			(xy 25.4 101.6) (xy 27.305 101.6)
 		)
 		(stroke
 			(width 0)
@@ -2858,7 +2838,7 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 27.94) (xy 45.72 27.94)
+			(xy 40.005 27.94) (xy 40.64 27.94)
 		)
 		(stroke
 			(width 0)
@@ -2868,13 +2848,23 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 33.02) (xy 29.21 33.02)
+			(xy 25.4 27.94) (xy 27.305 27.94)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "bbff3928-d920-4480-a297-8bf7e18786ed")
+		(uuid "be051e77-4bfe-46c3-92e2-a138afe2c610")
+	)
+	(wire
+		(pts
+			(xy 50.8 35.56) (xy 50.8 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bf86d683-608d-4650-9a23-ae45fb732232")
 	)
 	(wire
 		(pts
@@ -2938,17 +2928,7 @@
 	)
 	(wire
 		(pts
-			(xy 55.88 35.56) (xy 55.88 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ddc03ff9-9dd0-4851-b4d1-9c7e10cd7f46")
-	)
-	(wire
-		(pts
-			(xy 73.66 29.21) (xy 60.96 29.21)
+			(xy 73.66 29.21) (xy 55.88 29.21)
 		)
 		(stroke
 			(width 0)
@@ -2958,7 +2938,27 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 104.14) (xy 26.67 104.14)
+			(xy 25.4 30.48) (xy 27.305 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e502eaaa-7d43-406f-961d-f36223b1fd10")
+	)
+	(wire
+		(pts
+			(xy 55.88 69.85) (xy 55.88 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e575e5f5-8234-4572-ade7-b8f9f01c7df6")
+	)
+	(wire
+		(pts
+			(xy 25.4 104.14) (xy 27.305 104.14)
 		)
 		(stroke
 			(width 0)
@@ -2968,7 +2968,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 106.68) (xy 40.64 106.68)
+			(xy 40.005 106.68) (xy 45.72 106.68)
 		)
 		(stroke
 			(width 0)
@@ -2978,7 +2978,7 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 109.22) (xy 40.64 109.22)
+			(xy 40.005 109.22) (xy 45.72 109.22)
 		)
 		(stroke
 			(width 0)
@@ -2988,7 +2988,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 109.22) (xy 26.67 109.22)
+			(xy 25.4 109.22) (xy 27.305 109.22)
 		)
 		(stroke
 			(width 0)
@@ -2997,7 +2997,7 @@
 		(uuid "fbf27140-d2bf-40bb-898e-345fa0a67eb2")
 	)
 	(label "L01"
-		(at 50.8 58.42 270)
+		(at 50.8 47.625 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3027,7 +3027,7 @@
 		(uuid "54837760-40c7-4945-b9b0-37f03e8664e0")
 	)
 	(label "L02"
-		(at 53.34 58.42 270)
+		(at 53.34 72.39 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3037,7 +3037,7 @@
 		(uuid "871df31e-50e3-46e9-a8a8-dc1175b47ccd")
 	)
 	(label "L00"
-		(at 48.26 58.42 270)
+		(at 48.26 47.625 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3047,7 +3047,7 @@
 		(uuid "a08d2b94-0682-4d1a-985a-49e819818ee0")
 	)
 	(label "L03"
-		(at 55.88 58.42 270)
+		(at 55.88 72.39 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3058,7 +3058,7 @@
 	)
 	(global_label "VCC"
 		(shape input)
-		(at 35.56 21.59 90)
+		(at 33.655 21.59 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3068,7 +3068,7 @@
 		)
 		(uuid "77da3440-56a4-497b-b335-f8312acd2f2f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 35.56 14.9762 90)
+			(at 33.655 14.9762 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3080,7 +3080,7 @@
 	)
 	(global_label "VCC"
 		(shape input)
-		(at 33.02 97.79 90)
+		(at 33.655 97.79 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3090,7 +3090,7 @@
 		)
 		(uuid "ca551fff-4b55-4822-a274-6a650677eb50")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 33.02 91.1762 90)
+			(at 33.655 91.1762 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3113,7 +3113,7 @@
 	)
 	(hierarchical_label "IN1"
 		(shape input)
-		(at 25.4 25.4 180)
+		(at 25.4 101.6 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3168,7 +3168,7 @@
 	)
 	(hierarchical_label "IN7"
 		(shape input)
-		(at 25.4 106.68 180)
+		(at 25.4 30.48 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3179,7 +3179,7 @@
 	)
 	(hierarchical_label "IN6"
 		(shape input)
-		(at 25.4 104.14 180)
+		(at 25.4 27.94 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3201,7 +3201,7 @@
 	)
 	(hierarchical_label "IN8"
 		(shape input)
-		(at 25.4 109.22 180)
+		(at 25.4 33.02 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3212,7 +3212,7 @@
 	)
 	(hierarchical_label "IN5"
 		(shape input)
-		(at 25.4 101.6 180)
+		(at 25.4 25.4 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3234,7 +3234,7 @@
 	)
 	(hierarchical_label "IN3"
 		(shape input)
-		(at 25.4 30.48 180)
+		(at 25.4 106.68 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3245,7 +3245,7 @@
 	)
 	(hierarchical_label "IN4"
 		(shape input)
-		(at 25.4 33.02 180)
+		(at 25.4 109.22 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3278,7 +3278,7 @@
 	)
 	(hierarchical_label "IN2"
 		(shape input)
-		(at 25.4 27.94 180)
+		(at 25.4 104.14 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3322,7 +3322,7 @@
 	)
 	(symbol
 		(lib_id "peppercorn:MUX4 (conceptual) (upside down)")
-		(at 50.8 29.21 0)
+		(at 45.72 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3331,7 +3331,7 @@
 		(fields_autoplaced yes)
 		(uuid "1c2537f1-e4d8-4a80-9e37-bb693bb4fabe")
 		(property "Reference" "M13"
-			(at 53.34 20.32 0)
+			(at 48.26 20.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3340,7 +3340,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 53.34 22.86 0)
+			(at 48.26 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3348,7 +3348,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 50.8 29.21 0)
+			(at 45.72 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3357,7 +3357,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 50.8 29.21 0)
+			(at 45.72 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3366,7 +3366,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 50.8 29.21 0)
+			(at 45.72 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3601,7 +3601,7 @@
 	)
 	(symbol
 		(lib_id "peppercorn:MUX invert/mask")
-		(at 33.02 105.41 0)
+		(at 33.655 105.41 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3610,7 +3610,7 @@
 		(fields_autoplaced yes)
 		(uuid "1de3a489-e7a1-4d4f-aff9-0fb11612e130")
 		(property "Reference" "U6"
-			(at 33.02 107.95 0)
+			(at 33.655 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3619,7 +3619,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 33.7106 114.3 0)
+			(at 34.3456 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3627,7 +3627,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 33.02 105.41 0)
+			(at 33.655 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3636,7 +3636,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 33.02 105.41 0)
+			(at 33.655 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3645,7 +3645,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 33.02 105.41 0)
+			(at 33.655 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3751,7 +3751,7 @@
 	)
 	(symbol
 		(lib_id "peppercorn:MUX4 (conceptual)")
-		(at 48.26 105.41 0)
+		(at 53.34 105.41 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3760,7 +3760,7 @@
 		(fields_autoplaced yes)
 		(uuid "238de562-53ac-4aec-bfd2-171cb9593710")
 		(property "Reference" "M12"
-			(at 48.26 111.76 0)
+			(at 53.34 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3769,7 +3769,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 48.26 114.3 0)
+			(at 53.34 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3777,7 +3777,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 48.26 105.41 0)
+			(at 53.34 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3786,7 +3786,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 48.26 105.41 0)
+			(at 53.34 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3795,7 +3795,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 48.26 105.41 0)
+			(at 53.34 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3895,7 +3895,7 @@
 	)
 	(symbol
 		(lib_id "peppercorn:MUX invert/mask")
-		(at 35.56 29.21 0)
+		(at 33.655 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3904,7 +3904,7 @@
 		(fields_autoplaced yes)
 		(uuid "3c2d5a65-6e70-43d7-aabf-4644bb87bf73")
 		(property "Reference" "U7"
-			(at 35.56 31.75 0)
+			(at 33.655 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3913,7 +3913,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 36.2506 38.1 0)
+			(at 34.3456 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3921,7 +3921,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 35.56 29.21 0)
+			(at 33.655 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3930,7 +3930,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 35.56 29.21 0)
+			(at 33.655 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3939,7 +3939,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 35.56 29.21 0)
+			(at 33.655 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
