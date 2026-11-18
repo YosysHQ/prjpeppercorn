@@ -26,6 +26,10 @@
 
 namespace GateMate {
 
+// NOP and execute are single byte commands without length and CRC
+static constexpr const uint8_t CMD_NOP = 0x00;
+static constexpr const uint8_t CMD_EXECUTE = 0x33;
+
 static constexpr const uint8_t CMD_PLL = 0xc1;
 static constexpr const uint8_t CMD_CFGMODE = 0xc2;
 static constexpr const uint8_t CMD_CFGRST = 0xc3;
@@ -208,13 +212,6 @@ class BitstreamReadWriter
             write_byte(val);
     }
 
-    // Skip over bytes while updating CRC
-    void skip_bytes(size_t count)
-    {
-        for (size_t i = 0; i < count; i++)
-            get_byte();
-    }
-
     // Write a little endian uint16_t into the bitstream
     void write_uint16(uint16_t val)
     {
@@ -255,7 +252,15 @@ class BitstreamReadWriter
     void write_nops(size_t count)
     {
         for (size_t i = 0; i < count; i++)
-            write_byte(0);
+            write_byte(CMD_NOP);
+    }
+
+    // Activates configuration of previous command
+    void write_cmd_execute()
+    {
+        write_nops(4);
+        write_byte(CMD_EXECUTE);
+        write_nops(4);
     }
 
     // Writing commands
@@ -275,9 +280,7 @@ class BitstreamReadWriter
         write_header(CMD_PATH, 1);
         write_byte(data);
         insert_crc16();
-        write_nops(4);
-        write_byte(0x33);
-        write_nops(4);
+        write_cmd_execute();
     }
 
     void write_cmd_jump(uint32_t addr)
@@ -385,9 +388,7 @@ class BitstreamReadWriter
         write_header(CMD_CHG_STATUS, 1);
         write_byte(data);
         insert_crc16();
-        write_nops(4);
-        write_byte(0x33);
-        write_nops(4);
+        write_cmd_execute();
     }
 
     void write_cmd_chg_status(uint8_t cfg, uint8_t next_mode, std::vector<uint8_t> data)
@@ -398,9 +399,7 @@ class BitstreamReadWriter
         for (int i = 2; i < 12; i++)
             write_byte(data[Die::STATUS_CFG_START + i]);
         insert_crc16();
-        write_nops(4);
-        write_byte(0x33);
-        write_nops(4);
+        write_cmd_execute();
     }
 };
 
@@ -451,6 +450,8 @@ int Bitstream::determine_size(int *max_die_x, int *max_die_y)
     while (!rd.is_end()) {
         rd.crc16.reset_crc16();
         uint8_t cmd = rd.get_command_opcode();
+        if (cmd == CMD_NOP || cmd == CMD_EXECUTE)
+            continue;
         uint16_t length = (cmd == CMD_FRAM) ? rd.get_uint16() : rd.get_byte();
         std::vector<uint8_t> block;
         switch (cmd) {
@@ -478,17 +479,6 @@ int Bitstream::determine_size(int *max_die_x, int *max_die_y)
             // Set CRC flag
             if (cmd == CMD_CFGMODE)
                 rd.set_crc_unused(block[1] == 0x02);
-            // Skip bytes
-            if (cmd == CMD_SLAVE_MODE)
-                rd.skip_bytes(3);
-            if (cmd == CMD_CFGMODE)
-                rd.skip_bytes(4);
-            if (cmd == CMD_PLL)
-                rd.skip_bytes(6);
-            if (cmd == CMD_CHG_STATUS)
-                rd.skip_bytes(9);
-            if (cmd == CMD_JUMP)
-                rd.skip_bytes(2);
             break;
         case CMD_PATH:
             // Check header CRC
@@ -516,8 +506,6 @@ int Bitstream::determine_size(int *max_die_x, int *max_die_y)
             }
             // Check data CRC
             check_crc(rd);
-            // Skip bytes
-            rd.skip_bytes(9);
             break;
         default:
             BITSTREAM_FATAL("Unhandled command 0x" << std::hex << std::setw(2) << std::setfill('0') << int(cmd),
@@ -548,6 +536,8 @@ Chip Bitstream::deserialise_chip()
     while (!rd.is_end()) {
         rd.crc16.reset_crc16();
         uint8_t cmd = rd.get_command_opcode();
+        if (cmd == CMD_NOP || cmd == CMD_EXECUTE)
+            continue;
         uint16_t length = (cmd == CMD_FRAM) ? rd.get_uint16() : rd.get_byte();
         std::vector<uint8_t> block;
         switch (cmd) {
@@ -633,9 +623,6 @@ Chip Bitstream::deserialise_chip()
             }
             // Check data CRC
             check_crc(rd);
-
-            // Skip bytes
-            rd.skip_bytes(9);
             break;
         case CMD_D2D:
             BITSTREAM_DEBUG("CMD_D2D");
@@ -673,9 +660,6 @@ Chip Bitstream::deserialise_chip()
             die->write_pll_select(pll_select, block);
             // Check data CRC
             check_crc(rd);
-
-            // Skip bytes
-            rd.skip_bytes(6);
             break;
         case CMD_LXLYS:
             if (length != 2)
@@ -748,9 +732,6 @@ Chip Bitstream::deserialise_chip()
 
             // Check data CRC
             check_crc(rd);
-
-            // Skip bytes
-            rd.skip_bytes(9);
             break;
         case CMD_SLAVE_MODE:
             BITSTREAM_DEBUG("CMD_SLAVE_MODE");
@@ -763,9 +744,6 @@ Chip Bitstream::deserialise_chip()
             rd.get_byte();
             // Check data CRC
             check_crc(rd);
-
-            // Skip bytes
-            rd.skip_bytes(3);
             break;
         case CMD_FLASH:
             BITSTREAM_DEBUG("CMD_FLASH");
@@ -792,9 +770,6 @@ Chip Bitstream::deserialise_chip()
             check_crc(rd);
 
             rd.set_crc_unused(block[1] == 0x02);
-
-            // Skip bytes
-            rd.skip_bytes(4);
             break;
 
         case CMD_SERDES:
@@ -837,9 +812,6 @@ Chip Bitstream::deserialise_chip()
 
             // Check data CRC
             check_crc(rd);
-
-            // Skip bytes
-            rd.skip_bytes(2);
             break;
 
         default:
