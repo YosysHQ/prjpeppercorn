@@ -1029,10 +1029,12 @@ Bitstream Bitstream::serialise_chip(const Chip &chip, const std::map<std::string
                             if (std::all_of(data.begin(), data.end(), [](uint8_t i) { return i == 0; }))
                                 continue;
                         }
-                        // 2nd iteration with no changes if no FF initialization
-                        if (iteration == 1 && ff_init) {
+                        // 2nd iteration only needs CPE data
+                        if (iteration == 1) {
                             // Only CPE data is exported
                             data.resize(40);
+                        }
+                        if (iteration == 1 && ff_init) {
                             // Set initial FFs states
                             for (int i = 0; i < 4; i++) {
                                 uint8_t ff = (ff_init >> (i * 2)) & 0x03;
