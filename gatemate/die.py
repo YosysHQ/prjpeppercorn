@@ -4061,10 +4061,23 @@ class Die:
             self.create_conn(x,y+offset,f"{get_sb_type(x,y+offset)}.P{plane}.Y4", x,y,f"IM.P{plane}.D3", f"im_x1_y1_p{p}_d3_path1")
 
             # D4 and D5 are from diagonal INMUX
+            # Added handling edges as per documentation
             if is_cpe(x-1,y-1):
                 self.create_conn(x-1,y-1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D4", f"im_x1_y1_p{p}_d4_path1")
+            elif not is_cpe(x-1,y):
+                sb_x = x-1 if is_sb(x-1,y-1) else x-2
+                self.create_conn(sb_x,y-1,f"{get_sb_type(sb_x,y-1)}.P{plane}.Y3", x,y,f"IM.P{plane}.D4", f"im_x1_y1_p{p}_d4_path1")
+            elif not is_cpe(x,y-1):
+                sb_y = y-1 if is_sb(x-1,y-1) else y-2
+                self.create_conn(x-1,sb_y,f"{get_sb_type(x-1,sb_y)}.P{plane}.Y4", x,y,f"IM.P{plane}.D4", f"im_x1_y1_p{p}_d4_path1")
             if is_cpe(x+1,y+1):
                 self.create_conn(x+1,y+1,f"IM.P{plane}.Y", x,y,f"IM.P{plane}.D5", f"im_x1_y1_p{p}_d5_path1")
+            elif not is_cpe(x+1,y):
+                sb_x = x+1 if is_sb(x+1,y+1) else x+2
+                self.create_conn(sb_x,y+1,f"{get_sb_type(sb_x,y+1)}.P{plane}.Y1", x,y,f"IM.P{plane}.D5", f"im_x1_y1_p{p}_d5_path1")
+            elif not is_cpe(x,y+1):
+                sb_y = y+1 if is_sb(x+1,y+1) else y+2
+                self.create_conn(x+1,sb_y,f"{get_sb_type(x+1,sb_y)}.P{plane}.Y2", x,y,f"IM.P{plane}.D5", f"im_x1_y1_p{p}_d5_path1")
 
     def create_sb(self, x,y):
         x_0,y_0 = base_loc(x,y)
