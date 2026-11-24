@@ -539,6 +539,7 @@ def get_timings(name):
     val["del_GLBOUT_sb_big"] = convert_delay(timing_data.timing_delays.del_GLBOUT_sb_big.val)
 
     val["del_sb_drv"] = convert_delay(timing_data.timing_delays.del_sb_drv.val)
+    val["del_sb_cpe"] = Timing(TimingDelay(10, 10, 10), TimingDelay(10, 10, 10))
 
     val["del_CP_carry_path"] = convert_delay(timing_data.timing_delays.del_CP_carry_path.val)
     val["del_CP_prop_path"] = convert_delay(timing_data.timing_delays.del_CP_prop_path.val)

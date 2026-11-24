@@ -3718,7 +3718,8 @@ def get_mux_connections_for_type(type):
             plane = f"{p:02d}"
             # Per Y output mux
             for i in range(1,5):
-                create_mux(f"SB_BIG.P{plane}.D0",     f"SB_BIG.P{plane}.Y{i}", 3, 0, True, delay=f"{delay}_p{p}_d{i}_s0")
+                # takes constant 10 since delay is in OM
+                create_mux(f"SB_BIG.P{plane}.D0",     f"SB_BIG.P{plane}.Y{i}", 3, 0, True, delay="del_sb_cpe")
                 create_mux(f"SB_BIG.P{plane}.YDIAG",  f"SB_BIG.P{plane}.Y{i}", 3, 1, True, delay=f"{delay}_p{p}_d{i}_s1")
                 create_mux(f"SB_BIG.P{plane}.D2_{i}", f"SB_BIG.P{plane}.Y{i}", 3, 2, True, delay=f"{delay}_p{p}_d{i}_s2")
                 create_mux(f"SB_BIG.P{plane}.D3_{i}", f"SB_BIG.P{plane}.Y{i}", 3, 3, True, delay=f"{delay}_p{p}_d{i}_s3")
@@ -3737,9 +3738,10 @@ def get_mux_connections_for_type(type):
             create_mux(f"SB_BIG.P{plane}.X12", f"SB_BIG.P{plane}.YDIAG", 3, 6, True, delay=f"{delay}_p{p}_d0_s6")
             create_mux(f"SB_BIG.P{plane}.X23", f"SB_BIG.P{plane}.YDIAG", 3, 7, True, delay=f"{delay}_p{p}_d0_s7")
 
+            # SB_DRIVE delays are calculated in spans using them already
             for i in range(1,5):
-                create_mux(f"SB_DRIVE.P{plane}.D{i}.IN", f"SB_DRIVE.P{plane}.D{i}.OUT", 1, 1, True, f"SB_DRIVE.P{plane}.D{i}", delay="del_sb_drv")
-                create_mux(f"SB_DRIVE.P{plane}.D{i}.IN", f"SB_DRIVE.P{plane}.D{i}.OUT_NOINV", 1, 1, False, f"SB_DRIVE.P{plane}.D{i}", delay="del_sb_drv")
+                create_mux(f"SB_DRIVE.P{plane}.D{i}.IN", f"SB_DRIVE.P{plane}.D{i}.OUT", 1, 1, True, f"SB_DRIVE.P{plane}.D{i}", delay="del_dummy")
+                create_mux(f"SB_DRIVE.P{plane}.D{i}.IN", f"SB_DRIVE.P{plane}.D{i}.OUT_NOINV", 1, 1, False, f"SB_DRIVE.P{plane}.D{i}", delay="del_dummy")
 
                 create_direct(f"SB_BIG.P{plane}.Y{i}", f"SB_DRIVE.P{plane}.D{i}.IN",delay="del_dummy")
 
@@ -3755,7 +3757,8 @@ def get_mux_connections_for_type(type):
             plane = f"{p:02d}"
             # Per Y output mux
             for i in range(1,5):
-                create_mux(f"SB_SML.P{plane}.D0",       f"SB_SML.P{plane}.Y{i}_int", 2, 0, False, f"SB_SML.P{plane}.Y{i}", delay=f"{delay}_p{p}_d{i}_s0")
+                # takes constant 10 since delay is in OM
+                create_mux(f"SB_SML.P{plane}.D0",       f"SB_SML.P{plane}.Y{i}_int", 2, 0, False, f"SB_SML.P{plane}.Y{i}", delay="del_sb_cpe")
                 create_mux(f"SB_SML.P{plane}.YDIAG_int",f"SB_SML.P{plane}.Y{i}_int", 2, 1, False, f"SB_SML.P{plane}.Y{i}", delay=f"{delay}_p{p}_d{i}_s1")
                 create_mux(f"SB_SML.P{plane}.D2_{i}",   f"SB_SML.P{plane}.Y{i}_int", 2, 2, False, f"SB_SML.P{plane}.Y{i}", delay=f"{delay}_p{p}_d{i}_s2")
                 create_mux(f"SB_SML.P{plane}.D3_{i}",   f"SB_SML.P{plane}.Y{i}_int", 2, 3, False, f"SB_SML.P{plane}.Y{i}", delay=f"{delay}_p{p}_d{i}_s3")
